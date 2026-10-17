@@ -7,7 +7,7 @@ const notice = copy[lang].preview;
 ---
 <aside aria-label={notice.label} class="wrap preview-notice" data-preview-notice>
   <div class="preview-notice-inner">
-    <span class="preview-badge">{notice.label}</span>
+    <span class="preview-badge preview-badge-spinner">{notice.label}</span>
     <p class="preview-message">{notice.message}</p>
   </div>
 </aside>
@@ -51,6 +51,10 @@ const notice = copy[lang].preview;
     margin-inline: 4px;
   }
 
+  .preview-badge-spinner {
+    animation: preview-badge-spin 4s linear infinite;
+  }
+
   .preview-message {
     flex: 1 1 24rem;
     min-width: 0;
@@ -65,6 +69,11 @@ const notice = copy[lang].preview;
   @keyframes preview-rainbow {
     from { background-position: 0% 50%; }
     to { background-position: 100% 50%; }
+  }
+
+  @keyframes preview-badge-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
   }
 
   @media (prefers-reduced-motion: reduce) {
