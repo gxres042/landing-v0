@@ -19,6 +19,7 @@ const shortLanguage = { zh: '繁中', en: 'EN', 'zh-cn': '简中' } as const;
       {(['tour', 'why', 'start', 'k8s'] as const).map(key => <a class="inline-flex min-h-11 items-center rounded-md hover:text-ink hover:underline underline-offset-4" href={`${home}#${key}`}>{t.nav[key]}</a>)}
       <a href={localizePath('/blog/', lang)} aria-current={blog ? 'page' : undefined} class:list={['inline-flex min-h-11 items-center rounded-md underline-offset-4 hover:underline', { 'font-semibold underline text-ink': blog }]}>{blogCopy[lang].title}</a>
       <a class="inline-flex min-h-11 items-center rounded-md hover:underline underline-offset-4" href="https://github.com/engawahq">GitHub</a>
+      <a class="inline-flex min-h-11 items-center rounded-md hover:underline underline-offset-4" href="https://discord.gg/dsRZDGKQdA">Discord</a>
       <details class="language-switcher" data-language-switcher>
         <summary aria-label={`${languageLabel}: ${languageNames[lang]}`}>
           <Icon name="globe" />
