@@ -1,0 +1,26 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import Landing from '../../components/Landing.astro';
+import copy from '../../data/landing.json';
+import PreviewNotice from '../../components/PreviewNotice.astro';
+import { languageTags } from '../../i18n';
+
+const t = copy['zh-cn'];
+---
+
+<!doctype html>
+<html lang={languageTags['zh-cn']}>
+	<head>
+		<BaseHead title="engawa" description={t.hero.sub} lang="zh-cn" />
+	</head>
+	<body>
+		<PreviewNotice lang="zh-cn" />
+		<Header lang="zh-cn" />
+		<main id="main">
+			<Landing lang="zh-cn" />
+		</main>
+		<Footer lang="zh-cn" />
+	</body>
+</html>

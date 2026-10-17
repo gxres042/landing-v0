@@ -1,0 +1,1388 @@
+{
+  "zh": {
+    "preview": {
+      "label": "預覽版本",
+      "message": "這個首頁是臨時做的預覽版本，之後會有人重新設計。現在的樣子還請見諒 QQ"
+    },
+    "nav": {
+      "tour": "示範",
+      "why": "為什麼",
+      "start": "開始",
+      "k8s": "給工程師",
+      "label": "主要導覽"
+    },
+    "hero": {
+      "status": "開發中 · 0.1 尚未發佈",
+      "h1a": "像 PaaS 一樣簡單，Agent 也會用，",
+      "h1b": "資料只在你手上",
+      "sub": "engawa 是開發中的 PaaS，計畫免費、開源，目前尚未公開。它是把程式放上去，就有網址、有狀態畫面的那種平台。差別在於它裝在你自己的主機上，一台 VPS 就能跑。",
+      "cta1": "在 GitHub 追蹤進度",
+      "cta2": "看示範",
+      "note": "Genkan 已整合，0.1 尚未發佈。"
+    },
+    "proof": {
+      "label": "三件事",
+      "rows": [
+        {
+          "title": "像 PaaS 一樣簡單",
+          "body": "畫面上只有服務、網址、備份這些你本來就懂的東西。你跟 AI Agent 說「幫我放上去」，結果會直接出現在 engawa 裡。",
+          "extra": ""
+        },
+        {
+          "title": "Agent 也會用",
+          "body": "engawa 不自己發明設定格式，用的是標準的 Kubernetes。Agent 早就學過這一套，不用另外教它。",
+          "extra": ""
+        },
+        {
+          "title": "資料只在你手上",
+          "body": "密碼和設定只放在你自己的主機。engawa 沒有自己的資料庫，主機商也沒有讀取的管道。",
+          "extra": "做不到的地方：擁有實體機器的主機商，理論上還是讀得到記憶體和磁碟。差別在於他得闖進你的機器、留下痕跡，沒辦法查一下資料庫就拿走。"
+        }
+      ]
+    },
+    "why": {
+      "eyebrow": "為什麼",
+      "title": "用過部署平台，你可能遇過這些事",
+      "body": "很多平台把你的設定存進它自己的資料庫，再翻譯成底層的東西。一開始很好上手，之後就卡在下面這些地方。",
+      "c1": "你遇過的情境",
+      "c2": "engawa 怎麼處理",
+      "rows": [
+        {
+          "pain": "想裝的東西，平台說不支援。",
+          "detail": "例如想自己跑一套資料庫管理工具，平台沒有對應的畫面。硬裝上去，平台上又看不到它。",
+          "fix": "你主機上有什麼，engawa 就顯示什麼。它還不認得的東西，也會先列出來。"
+        },
+        {
+          "pain": "改好的設定，下次更新又被蓋掉。",
+          "detail": "你手動加了一個設定，之後在平台上改別的地方，它又被改回去。",
+          "fix": "engawa 只改你叫它改的那一項，其他設定原封不動。改之前，先讓你看會變什麼。"
+        },
+        {
+          "pain": "想搬家，卻搬不走。",
+          "detail": "東西都用平台自己的格式存著，換平台就得從頭再弄一次。",
+          "fix": "服務用的是 Kubernetes 這個通用標準，不是 engawa 的格式。換工具，服務不用重做。"
+        },
+        {
+          "pain": "平台壞了，你連自己的服務都碰不到。",
+          "detail": "平台當機的時候，你不知道它幫你建了什麼，也沒辦法自己處理。",
+          "fix": "engawa 停了或被移除，服務照樣在跑。你也能用指令或 Agent 直接處理，不用等 engawa 回來。"
+        },
+        {
+          "pain": "平台被入侵，你的密碼跟著被偷。",
+          "detail": "密碼存在平台的資料庫裡。誰拿到那個資料庫，誰就拿到你的密碼。",
+          "fix": "密碼只放在你自己的主機。engawa 沒有地方存它，也就沒有東西能從 engawa 偷走。"
+        },
+        {
+          "pain": "AI Agent 很會寫程式，卻看不懂平台的設定。",
+          "detail": "每個平台都有自己發明的設定方式，Agent 沒學過，只能用猜的。",
+          "fix": "engawa 用標準的 Kubernetes，Agent 本來就會。你用白話交代，它寫出來的設定，engawa 直接看得懂。"
+        }
+      ]
+    },
+    "tour": {
+      "eyebrow": "示範",
+      "title": "你跟 Agent 說要什麼，engawa 讓你看到結果",
+      "stage": "engawa 示範畫面",
+      "play": "播放",
+      "pause": "暫停",
+      "replay": "重播",
+      "stepAria": "第 {n} 段：",
+      "reduced": "你的系統設定了減少動態效果，這裡改成逐段的靜態畫面。點上面的段落切換。",
+      "modeLabel": "部署方式",
+      "modeAgent": "用 AI Agent",
+      "modeKubectl": "用 kubectl",
+      "mock": "示意",
+      "leftAgent": "你的 AI Agent",
+      "leftTerm": "你的終端機",
+      "ch": [
+        "請 Agent 部署",
+        "畫面跟著長出來",
+        "補上缺的設定",
+        "不用 engawa 了",
+        "密碼放在哪裡"
+      ],
+      "ch0k": "用 kubectl 部署",
+      "caps": [
+        {
+          "body": "你用平常說話的方式交代，Agent 在你的主機上建好專案 my-shop 和四個服務。它寫的是標準的 Kubernetes 設定，這本來就是它會的東西。",
+          "extra": "示意畫面，對話和資料都是範例。"
+        },
+        {
+          "body": "engawa 不用你另外登記什麼。它看你主機上已經有的東西，排成專案、服務和網址。狀態從「啟動中」變成「運行中」，小方塊一格格亮起來，每一格是一份正在跑的服務。",
+          "extra": "想看底層，按「進階」，會看到 Deployment、HTTPRoute 這些 Kubernetes 的名字。"
+        },
+        {
+          "body": "新服務一開始就有 HTTPS、資源上限、健康檢查和備份。已經在跑的服務，engawa 會照嚴重程度列出缺什麼。你先看會改哪裡，再按套用；套用後拿到一張收據，想改回來就按復原。",
+          "extra": "畫面裡的設定值是範例。"
+        },
+        {
+          "body": "移除 engawa 之後，網站照樣開得起來。服務不靠 engawa 活著。就算不用我們，你的服務還在，也還是你的。",
+          "extra": ""
+        },
+        {
+          "body": "密碼只放在你自己的主機。engawa 的畫面預設只顯示名稱，主機商也沒有讀取的管道。",
+          "extra": "做不到的地方：擁有實體機器的主機商，理論上還是讀得到記憶體和磁碟。差別在於他得闖進你的機器、留下痕跡，沒辦法查一下資料庫就拿走。"
+        }
+      ],
+      "cap0k": "習慣自己打指令也行。用 kubectl 部署，engawa 一樣看得到，不用先在 engawa 裡登記。",
+      "disclaimer": "互動示意 · 不會連線或變更任何真實叢集",
+      "noscript": "啟用 JavaScript 即可播放互動示意。這些畫面不會連線到真實叢集。"
+    },
+    "chat": {
+      "title": "你的 AI Agent",
+      "empty": "還沒有對話",
+      "placeholder": "跟你的 Agent 說要做什麼…",
+      "typing": "Agent 正在處理",
+      "codeLabel": "Agent 執行的指令（示意）",
+      "m0u": "幫我把這個商店網站放上去，要有網址，也要資料庫。",
+      "m0a": "好了。我在你的主機上開了一個專案 my-shop，放了四個服務：網站 web、後端 api、資料庫 db、背景工作 worker。網址是 shop.example.com。",
+      "m0b": "你可以打開 engawa 看看。",
+      "m1u": "現在狀況怎麼樣？",
+      "m1a": "四個服務都在跑了，網址也連得上。每個服務的狀態，在 engawa 上都看得到。",
+      "note2": "這一段在 engawa 裡操作：先看會改哪裡，再按套用。",
+      "m3u": "如果哪天我不想用 engawa 了呢？",
+      "m3a": "我把 engawa 移除了。",
+      "m3b": "服務都還在跑，網站也連得上。",
+      "m4u": "我的資料庫密碼存在哪裡？會不會外流？",
+      "m4a": "存在你自己的主機裡。engawa 畫面上只顯示名稱，不顯示內容；主機商也沒有讀取的管道。",
+      "t1": "# 打開 engawa：專案和服務一個個出現",
+      "t2": "# 這一段在 engawa 裡操作：看會改哪裡，再按套用",
+      "t4": "# 密碼只在這台主機裡，engawa 畫面只顯示名稱"
+    },
+    "ui": {
+      "paneLabel": "engawa",
+      "sideLabel": "engawa 側欄（示意）",
+      "projects": "專案",
+      "suggestions": "建議",
+      "capabilities": "能力",
+      "expand": "展開側欄",
+      "collapse": "收合側欄",
+      "empty": "還沒有專案",
+      "tab1": "概覽",
+      "tab2": "架構",
+      "tab3": "服務",
+      "adv": "進階",
+      "services": "服務",
+      "running": "運行中",
+      "starting": "啟動中",
+      "pods": "正在跑的份數",
+      "urls": "網址",
+      "noUrl": "還沒有網址",
+      "storage": "儲存空間",
+      "inUse": "使用中",
+      "uploads": "上傳的檔案",
+      "dbData": "資料庫的資料",
+      "backup": "備份",
+      "noBackup": "沒有排程",
+      "daily": "每天 03:00",
+      "example": "時間是範例",
+      "backing": "背後的物件",
+      "sugTitle": "建議",
+      "sugSub": "依嚴重程度排列",
+      "sev": {
+        "high": "高",
+        "medium": "中"
+      },
+      "review": "看 diff",
+      "undo": "復原",
+      "applied": "已套用",
+      "receipt": "已套用。想改回來，按復原。",
+      "cancel": "取消",
+      "apply": "套用",
+      "affected": "受影響的服務：",
+      "exampleCfg": "範例設定",
+      "goneTitle": "engawa 已移除",
+      "goneBody": "服務還在跑，網址也還連得上。",
+      "gaps": [
+        {
+          "s": "high",
+          "text": "db 沒有備份排程",
+          "title": "新增 db 的每日備份",
+          "affected": "db"
+        },
+        {
+          "s": "medium",
+          "text": "web、api 沒有資源上限",
+          "title": "替 web、api 加上資源上限",
+          "affected": "web、api"
+        },
+        {
+          "s": "medium",
+          "text": "worker 沒有健康檢查",
+          "title": "替 worker 加上健康檢查",
+          "affected": "worker"
+        }
+      ],
+      "serviceCount": "{n} 個",
+      "openCount": "{n} 項"
+    },
+    "secrets": {
+      "title": "engawa 和主機商都看不到你的密碼",
+      "cluster": "你的主機",
+      "provider": "主機商",
+      "noPath": "沒有讀取的管道",
+      "tryWord": "想讀取",
+      "blocked": "擋下",
+      "hidden": "內容不顯示",
+      "items": [
+        "資料庫密碼",
+        "API 金鑰",
+        "HTTPS 憑證"
+      ]
+    },
+    "safe": {
+      "eyebrow": "出事的時候",
+      "title": "最壞的情況，會怎樣",
+      "body": "我們不想只說「很安全」。下面是幾種壞情況，以及 engawa 在每一種情況下做得到、做不到的事。",
+      "rows": [
+        {
+          "q": "engawa 自己被入侵",
+          "a": "engawa 用你自己的身分操作主機，手上沒有比你更大的權限。設計目標是：攻擊者拿到的權限，不會比當下登入的人多。"
+        },
+        {
+          "q": "主機商的系統被入侵",
+          "a": "你的密碼不在主機商的資料庫裡，那裡沒有東西可拿。"
+        },
+        {
+          "q": "主機商自己想看",
+          "a": "擁有實體機器的主機商，理論上讀得到記憶體和磁碟，這點 engawa 擋不住。差別在於他得闖進你的機器、留下痕跡。真的在意，就用自己的硬體。"
+        },
+        {
+          "q": "engawa 停了，或被移除",
+          "a": "服務照跑。設計上，每次發布前都要先通過移除測試：拿掉 engawa，再確認服務還活著。"
+        }
+      ]
+    },
+    "start": {
+      "eyebrow": "開始",
+      "title": "從你手上有的開始",
+      "c1": "你手上有",
+      "c2": "怎麼開始",
+      "c3": "要裝在哪",
+      "rows": [
+        {
+          "who": "一台 VPS",
+          "how": "在主機上貼一行指令，裝好 k3s（輕量版的 Kubernetes）和 engawa，再用瀏覽器和 passkey（指紋或手機解鎖）建立管理者。從 Dokploy 或 Coolify 搬過來，也走這條路。",
+          "where": "都裝在那台主機上"
+        },
+        {
+          "who": "已經有 Kubernetes 叢集",
+          "how": "在自己的電腦執行 engawa ui，用你現有的連線設定打開介面。",
+          "where": "叢集裡不用裝東西"
+        },
+        {
+          "who": "不想管主機",
+          "how": "由主機商代管的 Managed engawa。",
+          "where": "還沒有，目前沒有主機商提供"
+        }
+      ],
+      "note": "這裡介紹的是使用情境與操作流程；0.1 尚未發佈。"
+    },
+    "status": {
+      "eyebrow": "進度",
+      "title": "現在做到哪裡",
+      "body": "0.1 尚未發佈，engawa 目前尚未開源。以下是開發版目前的實作進度。",
+      "rows": [
+        {
+          "k": "ok",
+          "label": "專案與服務",
+          "text": "從 Kubernetes 物件整理專案、服務與連線，可查看服務狀態、事件和資源用量。"
+        },
+        {
+          "k": "ok",
+          "label": "日誌與終端機",
+          "text": "可在瀏覽器追蹤 Pod 日誌、連進容器終端機，操作仍受使用者自己的 Kubernetes 權限約束。"
+        },
+        {
+          "k": "ok",
+          "label": "變更預覽與回退",
+          "text": "先預覽設定和 YAML 的差異，再確認套用；也能比較工作負載版本，透過相同流程回退。"
+        },
+        {
+          "k": "ok",
+          "label": "已整合 Genkan",
+          "text": "passkey 登入與短效管理員提權都已接上。每次操作使用使用者的 token，由 kube-apiserver 依 RBAC 判斷權限。"
+        },
+        {
+          "k": "ok",
+          "label": "診斷與 Agent 工具",
+          "text": "已有常見故障診斷與設定缺口建議；唯讀 MCP 和 engawactl doctor 可用來查詢叢集狀態。"
+        },
+        {
+          "k": "progress",
+          "label": "持續打磨",
+          "text": "接下來著重介面易用性、錯誤提示與健康狀態呈現，以及 API 結構整理。"
+        }
+      ]
+    },
+    "k8s": {
+      "eyebrow": "給懂 Kubernetes 的人",
+      "title": "給懂 Kubernetes 的人",
+      "body": "上面刻意不講術語。這裡是實際的做法：畫面怎麼從物件讀出來、寫入怎麼做、安全怎麼分層。",
+      "open": "展開技術細節",
+      "close": "收起技術細節",
+      "mapTitle": "畫面從物件讀出來，沒有另外存",
+      "mapBody": "Namespace、Deployment、Service 這些物件本身就是資料。engawa 看它們彼此怎麼引用，排成專案、服務和網址。你用 kubectl、Argo CD 或 Agent 改了東西，畫面跟著變。",
+      "colK": "Kubernetes 物件",
+      "colV": "在 engawa 顯示為",
+      "rows": [
+        {
+          "k": "Namespace",
+          "v": "專案"
+        },
+        {
+          "k": "Deployment, StatefulSet",
+          "v": "服務"
+        },
+        {
+          "k": "Service, HTTPRoute",
+          "v": "網址"
+        },
+        {
+          "k": "PersistentVolumeClaim",
+          "v": "儲存空間"
+        },
+        {
+          "k": "Secret",
+          "v": "變數（不顯示值）"
+        },
+        {
+          "k": "CloudNativePG Cluster",
+          "v": "資料庫"
+        }
+      ],
+      "hint": "選左邊一列，看 engawa 讀哪個欄位",
+      "readAs": "engawa 讀成",
+      "hidden": "值不顯示",
+      "techTitle": "上面那些痛點，技術上怎麼處理",
+      "tech": [
+        {
+          "k": "讀任何物件",
+          "v": "專案是帶 label 的 Namespace，服務是 Deployment、StatefulSet 或資料庫 operator 的 CR，網址是 Service 與 HTTPRoute。還沒有專屬 adapter 的 operator，會用通用的方式顯示。"
+        },
+        {
+          "k": "只改你改的欄位",
+          "v": "寫入先做 dry-run、給你看 diff，再用 server-side apply（field manager 是 engawa）送出，不碰別人管的欄位。由 Argo CD 或 Flux 管的物件，改成匯出 patch 或開 PR；由 Helm 管的，會提醒你下次 helm upgrade 會蓋掉。"
+        },
+        {
+          "k": "沒有自己的 app 模型",
+          "v": "engawa 沒有資料庫，畫面上的一切都從叢集讀出來。補上的東西是 HPA、cert-manager 的憑證、K8up 的備份排程這類原生或上游物件，engawa 不在也照常運作。"
+        },
+        {
+          "k": "用你的身分",
+          "v": "所有讀寫都以使用者自己的身分送到 kube-apiserver。叢集內模式下，token 由 kube-apiserver 自己驗證（Structured Authentication Configuration），engawa 不需要 impersonate 權限，也不快取 Secret 的值。"
+        },
+        {
+          "k": "給 Agent 和自動化",
+          "v": "介面做得到的，API 都做得到。每個回應都帶著背後物件的 apiVersion、kind、name 與欄位路徑，介面的「背後的物件」面板就是靠它。"
+        }
+      ],
+      "layTitle": "分層：先什麼都不裝，需要時再加",
+      "layBody": "每往上一層，就多一個元件，也多一點要信任的東西。Genkan 已整合，用來簽發使用者的 token。",
+      "layLabel": "層",
+      "layBuild": "從 L0 逐層疊上",
+      "layNone": "叢集裡沒有 engawa 的元件",
+      "zoneCluster": "你的叢集",
+      "layers": [
+        {
+          "lv": "L0–L1",
+          "where": "你的電腦",
+          "trusts": "你的 kubeconfig。叢集裡什麼都不裝，所以這兩層沒有「engawa 被攻破」這回事。"
+        },
+        {
+          "lv": "L2",
+          "where": "叢集裡的 engawa",
+          "trusts": "你原本的 OIDC。token 由 kube-apiserver 自己驗證，engawa 只負責轉交，不冒充任何人。"
+        },
+        {
+          "lv": "L3",
+          "where": "Genkan 身分驗證",
+          "trusts": "Genkan 簽發的 token，給沒有自己 OIDC 的團隊。Genkan 本身不持有 cluster-admin。"
+        }
+      ],
+      "principle": "設計目標：不論在哪一層，engawa 的元件被攻破時，攻擊者拿到的權限都不會比當下那位使用者多。"
+    },
+    "providers": {
+      "eyebrow": "給主機商",
+      "title": "給主機商：讓客戶在你的機器上用這套介面",
+      "body": "engawa 尚未公開，計畫以 Apache-2.0 授權開源，不收授權費。你的客戶在你的機器上，用專案、服務和網址管理自己的服務；機器、儲存、備份這些有成本的東西由你來賣。客戶的密碼留在客戶自己的主機，你不必替他們保管。",
+      "cta": "到 GitHub 找我們",
+      "panel": "規劃中的整合點",
+      "points": [
+        {
+          "text": "叢集註冊與跨叢集管理的 API"
+        },
+        {
+          "text": "接你現有的登入系統（任何 OIDC 供應商）"
+        },
+        {
+          "text": "版本與健康狀態的 API"
+        },
+        {
+          "text": "關掉內建介面，只用 API 做你自己的介面"
+        }
+      ],
+      "fine": "這些都還在設計。如果你在主機商工作，歡迎帶著實際需求來討論。"
+    },
+    "build": {
+      "eyebrow": "一起做",
+      "title": "找一起做的人：UI/UX、雲端原生、Rust",
+      "body": "engawa 還在設計階段，介面現在很粗糙。這時候加入，能一起決定它長什麼樣子。Genkan 是用 Rust 寫的。"
+    },
+    "follow": {
+      "eyebrow": "追蹤",
+      "title": "到 GitHub 追蹤進度",
+      "body": "0.1 尚未發佈。追蹤 engawahq 組織，新的 repo 和發佈會出現在你的 GitHub 動態。",
+      "how": "只想收某一個專案的發布通知，到那個 repo 按 Watch，選 Releases。",
+      "cta": "追蹤 @engawahq",
+      "panel": "專案",
+      "open": "開啟",
+      "designing": "設計中",
+      "rows": [
+        {
+          "name": "engawa",
+          "text": "平台本身。還在設計，尚未公開。",
+          "href": ""
+        },
+        {
+          "name": "genkan",
+          "text": "登入元件（通用的 OIDC issuer），自己不持有 cluster-admin。",
+          "href": "https://github.com/engawahq/genkan"
+        },
+        {
+          "name": "recommendations",
+          "text": "挑選過的開源元件、版本與設定，用標準做法補上缺的功能。",
+          "href": "https://github.com/engawahq/recommendations"
+        }
+      ]
+    },
+    "footer": {
+      "line": "engawa · Apache-2.0 · 縁側是連接屋內與庭院的那條走廊",
+      "home": "engawa 首頁"
+    }
+  },
+  "en": {
+    "preview": {
+      "label": "Preview",
+      "message": "This is a temporary homepage preview. A redesign is planned; thanks for bearing with the rough edges."
+    },
+    "nav": {
+      "tour": "Demo",
+      "why": "Why",
+      "start": "Get started",
+      "k8s": "For engineers",
+      "label": "Main navigation"
+    },
+    "hero": {
+      "status": "In development · 0.1 not yet released",
+      "h1a": "PaaS simplicity. Ready for AI agents. ",
+      "h1b": "Your data stays with you.",
+      "sub": "engawa is a self-hosted PaaS in development. Deploy an app, get a URL, and see how it's running—all on your own server. A single VPS is enough. We plan to make it free and open source, but it isn't public yet.",
+      "cta1": "Follow along on GitHub",
+      "cta2": "Watch the demo",
+      "note": "Genkan is already integrated. Version 0.1 hasn't been released yet."
+    },
+    "proof": {
+      "label": "Key features",
+      "rows": [
+        {
+          "title": "As easy as a PaaS",
+          "body": "Manage services, URLs, and backups without learning the infrastructure underneath. Ask your AI agent to deploy an app, then see the results in engawa.",
+          "extra": ""
+        },
+        {
+          "title": "Works with AI agents",
+          "body": "engawa uses standard Kubernetes configuration, not a proprietary format. AI agents already know Kubernetes, so they don't need to learn another platform-specific syntax.",
+          "extra": ""
+        },
+        {
+          "title": "Your data stays with you",
+          "body": "Passwords and settings live only on your own server. engawa has no database of its own, and your hosting provider has no way to read them.",
+          "extra": "The limit: a provider with physical access can, in theory, read memory and disks. They would have to access your machine directly and leave traces, rather than simply query a central database."
+        }
+      ]
+    },
+    "why": {
+      "eyebrow": "Why",
+      "title": "Deployment platforms come with familiar trade-offs",
+      "body": "Many platforms store your configuration in their own database, then translate it into infrastructure. That makes getting started easy, but can create problems later.",
+      "c1": "The problem",
+      "c2": "engawa's approach",
+      "rows": [
+        {
+          "pain": "The platform doesn't support what you need.",
+          "detail": "You want to run a database management tool, but the platform has no UI for it. Install it yourself, and it still doesn't show up.",
+          "fix": "engawa shows what's running on your server, including resources it doesn't recognize yet."
+        },
+        {
+          "pain": "Your manual changes get overwritten.",
+          "detail": "You adjust a setting by hand, then a later change in the platform resets it.",
+          "fix": "engawa changes only the fields you ask it to change. You review the diff first; everything else stays untouched."
+        },
+        {
+          "pain": "Switching platforms means starting over.",
+          "detail": "Your configuration is stored in a proprietary format. Moving means rebuilding your setup.",
+          "fix": "Your services use standard Kubernetes resources, not an engawa-specific format. You can switch tools without rebuilding your services."
+        },
+        {
+          "pain": "The platform goes down and takes your access with it.",
+          "detail": "When it breaks, you don't know what it created for you and can't fix it yourself.",
+          "fix": "Your services keep running if engawa stops or is removed. You can manage them directly with command-line tools or an AI agent."
+        },
+        {
+          "pain": "The platform gets hacked, and your passwords go with it.",
+          "detail": "Your passwords sit in the platform's database. Whoever gets that database gets them.",
+          "fix": "Passwords stay on your server. engawa has no database to store them in, so compromising a central engawa database isn't a way to steal them."
+        },
+        {
+          "pain": "Your AI agent writes great code but can't read the platform's config.",
+          "detail": "Platform-specific configuration can leave agents guessing when they haven't learned that format.",
+          "fix": "Ask in plain English. Your agent writes standard Kubernetes configuration, and engawa reads it directly."
+        }
+      ]
+    },
+    "tour": {
+      "eyebrow": "Demo",
+      "title": "Ask your agent to deploy. See the results in engawa.",
+      "stage": "engawa demo",
+      "play": "Play",
+      "pause": "Pause",
+      "replay": "Replay",
+      "stepAria": "Step {n}: ",
+      "reduced": "Reduced motion is enabled in your system settings. This demo shows a static view of each step; select a step above to explore.",
+      "modeLabel": "Deployment method",
+      "modeAgent": "With an AI agent",
+      "modeKubectl": "With kubectl",
+      "mock": "Mockup",
+      "leftAgent": "Your AI agent",
+      "leftTerm": "Your terminal",
+      "ch": [
+        "Ask your agent to deploy",
+        "See your services appear",
+        "Review and apply fixes",
+        "Remove engawa",
+        "See where secrets live"
+      ],
+      "ch0k": "Deploy with kubectl",
+      "caps": [
+        {
+          "body": "Describe what you need in plain English. Your agent creates the my-shop project and four services on your server using standard Kubernetes configuration.",
+          "extra": "This is a mockup. All conversations and data are examples."
+        },
+        {
+          "body": "No registration step is needed in engawa. It discovers resources on your server and organizes them into projects, services, and URLs. As services start, their status changes to Running. Each small square represents a running replica.",
+          "extra": "Select Advanced to see the underlying Kubernetes resources, including Deployments and HTTPRoutes."
+        },
+        {
+          "body": "New services are designed to include HTTPS, resource limits, health checks, and backups by default. For existing services, engawa prioritizes missing configuration by severity. Review the diff, apply the change, and get a receipt. Select Undo to revert it.",
+          "extra": "Configuration values shown here are examples."
+        },
+        {
+          "body": "Remove engawa, and your website still loads. Your services don't depend on engawa to keep running. They stay on your server, under your control.",
+          "extra": ""
+        },
+        {
+          "body": "Passwords live only on your own server. By default engawa shows their names, not their contents, and your hosting provider has no way to read them.",
+          "extra": "The limit: a provider with physical access can, in theory, read memory and disks. They would have to access your machine directly and leave traces, rather than simply query a central database."
+        }
+      ],
+      "cap0k": "Prefer the command line? Deploy with kubectl. engawa discovers those resources too, with no separate registration step.",
+      "disclaimer": "Interactive mockup · No real cluster connections or changes",
+      "noscript": "Enable JavaScript to play the interactive mockup. It never connects to a real cluster."
+    },
+    "chat": {
+      "title": "Your AI agent",
+      "empty": "No messages yet",
+      "placeholder": "Tell your agent what to do…",
+      "typing": "Your agent is working",
+      "codeLabel": "Commands the agent ran (mockup)",
+      "m0u": "Deploy this online store with a URL and a database.",
+      "m0a": "Done. I created the my-shop project on your server with four services: web, api, db, and worker. Your store is available at shop.example.com.",
+      "m0b": "Open engawa to see your services.",
+      "m1u": "How's it going?",
+      "m1a": "All four services are running, and the site is reachable. You can check each service's status in engawa.",
+      "note2": "In engawa, review the proposed change, then select Apply.",
+      "m3u": "What happens if I stop using engawa?",
+      "m3a": "I removed engawa.",
+      "m3b": "Everything is still running, and the site still loads.",
+      "m4u": "Where is my database password stored? Who can access it?",
+      "m4a": "On your own server. engawa shows its name, not its contents, and your hosting provider has no way to read it.",
+      "t1": "# open engawa: the project and services appear one by one",
+      "t2": "# in engawa: review the diff, then apply the change",
+      "t4": "# the values stay on this server; engawa shows names only"
+    },
+    "ui": {
+      "paneLabel": "engawa",
+      "sideLabel": "engawa sidebar (mockup)",
+      "projects": "Projects",
+      "suggestions": "Suggestions",
+      "capabilities": "Capabilities",
+      "expand": "Expand sidebar",
+      "collapse": "Collapse sidebar",
+      "empty": "No projects yet",
+      "tab1": "Overview",
+      "tab2": "Architecture",
+      "tab3": "Services",
+      "adv": "Advanced",
+      "services": "Services",
+      "running": "Running",
+      "starting": "Starting",
+      "pods": "Running replicas",
+      "urls": "URLs",
+      "noUrl": "No URLs yet",
+      "storage": "Storage",
+      "inUse": "In use",
+      "uploads": "Uploaded files",
+      "dbData": "Database data",
+      "backup": "Backups",
+      "noBackup": "No schedule",
+      "daily": "Daily at 03:00",
+      "example": "Example schedule",
+      "backing": "Backing objects",
+      "sugTitle": "Suggestions",
+      "sugSub": "Sorted by severity",
+      "sev": {
+        "high": "High",
+        "medium": "Medium"
+      },
+      "review": "Review diff",
+      "undo": "Undo",
+      "applied": "Applied",
+      "receipt": "Change applied. Select Undo to revert it.",
+      "cancel": "Cancel",
+      "apply": "Apply",
+      "affected": "Affected services: ",
+      "exampleCfg": "Example settings",
+      "goneTitle": "engawa removed",
+      "goneBody": "Your services are still running, and your website is still reachable.",
+      "gaps": [
+        {
+          "s": "high",
+          "text": "db has no backup schedule",
+          "title": "Add a daily backup for db",
+          "affected": "db"
+        },
+        {
+          "s": "medium",
+          "text": "web and api have no resource limits",
+          "title": "Add resource limits to web and api",
+          "affected": "web, api"
+        },
+        {
+          "s": "medium",
+          "text": "worker has no health check",
+          "title": "Add a health check to worker",
+          "affected": "worker"
+        }
+      ],
+      "serviceCount": "{n}",
+      "openCount": "{n} open"
+    },
+    "secrets": {
+      "title": "Neither engawa nor your hosting provider can see your passwords",
+      "cluster": "Your server",
+      "provider": "Hosting provider",
+      "noPath": "No way to read them",
+      "tryWord": "tries to read",
+      "blocked": "Blocked",
+      "hidden": "contents hidden",
+      "items": [
+        "Database password",
+        "API key",
+        "HTTPS certificate"
+      ]
+    },
+    "safe": {
+      "eyebrow": "When things go wrong",
+      "title": "What if something goes wrong?",
+      "body": "Security claims need specifics. Here is what engawa is designed to protect against—and where its limits are.",
+      "rows": [
+        {
+          "q": "engawa itself is hacked",
+          "a": "engawa accesses your server with your identity and permissions. The design goal is to give an attacker no more access than the currently signed-in user."
+        },
+        {
+          "q": "Your hosting provider is hacked",
+          "a": "Your passwords aren't in the provider's database, so there's nothing there to take."
+        },
+        {
+          "q": "Your hosting provider wants to look",
+          "a": "A provider that owns the physical machine can, in theory, read memory and disk. engawa can't stop that. They'd have to break into your machine and leave traces. If that matters to you, use your own hardware."
+        },
+        {
+          "q": "engawa stops, or you remove it",
+          "a": "Your services keep running. The release process is designed to require a removal test: uninstall engawa, then confirm that the services are still running."
+        }
+      ]
+    },
+    "start": {
+      "eyebrow": "Get started",
+      "title": "Start with the infrastructure you have",
+      "c1": "You have",
+      "c2": "Getting started",
+      "c3": "Installation location",
+      "rows": [
+        {
+          "who": "One VPS",
+          "how": "Run one command on your server to install k3s, a lightweight Kubernetes distribution, and engawa. Then use your browser to create an administrator account with a passkey, such as a fingerprint or phone unlock. This is also the migration path from Dokploy or Coolify.",
+          "where": "On your server"
+        },
+        {
+          "who": "A Kubernetes cluster",
+          "how": "Run engawa ui on your computer to open the interface using your existing cluster connection settings.",
+          "where": "Nothing installed in the cluster"
+        },
+        {
+          "who": "Prefer managed hosting",
+          "how": "Managed engawa would be operated by a hosting provider.",
+          "where": "Not available yet; no provider currently offers it."
+        }
+      ],
+      "note": "The workflows above are a preview. Version 0.1 hasn't been released yet."
+    },
+    "status": {
+      "eyebrow": "Status",
+      "title": "Where things stand",
+      "body": "Version 0.1 hasn't been released, and engawa isn't open source yet. Here's what's implemented in the development build.",
+      "rows": [
+        {
+          "k": "ok",
+          "label": "Projects and services",
+          "text": "Browse projects, services, and their connections, with status, events, and resource usage drawn from Kubernetes."
+        },
+        {
+          "k": "ok",
+          "label": "Logs and terminal",
+          "text": "Stream pod logs and open a container terminal in the browser, using your own Kubernetes permissions."
+        },
+        {
+          "k": "ok",
+          "label": "Reviewed changes",
+          "text": "Preview configuration and YAML changes before applying them. Compare workload revisions and use the same review-and-confirm flow for rollbacks."
+        },
+        {
+          "k": "ok",
+          "label": "Genkan integrated",
+          "text": "Passkey sign-in and short-lived admin elevation are implemented. kube-apiserver authorizes each operation using your identity and RBAC permissions."
+        },
+        {
+          "k": "ok",
+          "label": "Diagnostics and agents",
+          "text": "Fault diagnostics and configuration checks are implemented, alongside a read-only MCP server and engawactl doctor for inspecting the cluster."
+        },
+        {
+          "k": "progress",
+          "label": "Still in development",
+          "text": "The next priorities are a clearer interface, better error and health reporting, and a more consistent API."
+        }
+      ]
+    },
+    "k8s": {
+      "eyebrow": "For people who know Kubernetes",
+      "title": "For people who know Kubernetes",
+      "body": "Here are the implementation details: how engawa builds its interface from Kubernetes resources, applies changes, and separates security responsibilities.",
+      "open": "Show technical details",
+      "close": "Hide technical details",
+      "mapTitle": "Kubernetes resources are the source of truth",
+      "mapBody": "Namespaces, Deployments, and Services already hold the data engawa needs. It follows their references to build a view of projects, services, and URLs. Changes made through kubectl, Argo CD, or an agent appear in the interface.",
+      "colK": "Kubernetes object",
+      "colV": "Shown in engawa as",
+      "rows": [
+        {
+          "k": "Namespace",
+          "v": "Project"
+        },
+        {
+          "k": "Deployment, StatefulSet",
+          "v": "Service"
+        },
+        {
+          "k": "Service, HTTPRoute",
+          "v": "URL"
+        },
+        {
+          "k": "PersistentVolumeClaim",
+          "v": "Storage"
+        },
+        {
+          "k": "Secret",
+          "v": "Variable (value hidden)"
+        },
+        {
+          "k": "CloudNativePG Cluster",
+          "v": "Database"
+        }
+      ],
+      "hint": "Pick a row to see which field engawa reads",
+      "readAs": "Displayed in engawa as",
+      "hidden": "value hidden",
+      "techTitle": "How the design addresses these problems",
+      "tech": [
+        {
+          "k": "Reads any object",
+          "v": "A project is a labeled Namespace. A service is a Deployment, StatefulSet, or database operator's custom resource. A URL maps to a Service and HTTPRoute. Operators without a dedicated adapter appear in a generic view."
+        },
+        {
+          "k": "Changes only the requested fields",
+          "v": "Each write starts with a dry run and a diff for review, followed by server-side apply with engawa as the field manager. Fields owned by other managers are left alone. For Argo CD or Flux resources, engawa exports a patch or opens a PR instead. For Helm-managed resources, it warns that the next helm upgrade may overwrite the change."
+        },
+        {
+          "k": "No app model of its own",
+          "v": "engawa has no database; its interface is built from cluster state. Added features use native or upstream resources, such as HPA, cert-manager certificates, and K8up backup schedules. Those resources continue working without engawa."
+        },
+        {
+          "k": "Acts as you",
+          "v": "Every read and write goes to kube-apiserver with the user's own identity. In-cluster, kube-apiserver validates the token itself (Structured Authentication Configuration), so engawa needs no impersonate permission, and it never caches Secret values."
+        },
+        {
+          "k": "For agents and automation",
+          "v": "Every UI action is also available through the API. Responses include the backing resource's apiVersion, kind, name, and field path. The Backing objects panel uses that same information."
+        }
+      ],
+      "layTitle": "Start locally. Add in-cluster components when you need them.",
+      "layBody": "Each layer adds a component and a trust dependency. Genkan is already integrated to issue user tokens.",
+      "layLabel": "Layers",
+      "layBuild": "Build up from L0",
+      "layNone": "No engawa components in the cluster",
+      "zoneCluster": "Your cluster",
+      "layers": [
+        {
+          "lv": "L0–L1",
+          "where": "Your computer",
+          "trusts": "Your kubeconfig. No engawa component runs in the cluster at these layers, so there is no in-cluster engawa component to compromise."
+        },
+        {
+          "lv": "L2",
+          "where": "engawa in the cluster",
+          "trusts": "Your existing OIDC provider. kube-apiserver verifies tokens directly; engawa forwards them without impersonating anyone."
+        },
+        {
+          "lv": "L3",
+          "where": "Genkan authentication",
+          "trusts": "Genkan-issued tokens for teams without an existing OIDC provider. Genkan itself has no cluster-admin privileges."
+        }
+      ],
+      "principle": "Design goal: at any layer, someone who compromises an engawa component gets no more access than the person using it at that moment."
+    },
+    "providers": {
+      "eyebrow": "Hosting providers",
+      "title": "Offer engawa on your infrastructure",
+      "body": "engawa isn't public yet. We plan to release it under Apache-2.0 with no license fee. Your customers would manage projects, services, and URLs through engawa while you provide the servers, storage, and backups. Their passwords stay on their own servers, so you don't have to store them.",
+      "cta": "Find us on GitHub",
+      "panel": "Planned integration points",
+      "points": [
+        {
+          "text": "Cluster registration and a multi-cluster API"
+        },
+        {
+          "text": "Sign-in through the system you already use (any OIDC provider)"
+        },
+        {
+          "text": "Version and health status API"
+        },
+        {
+          "text": "Disable the built-in UI and build your own interface on the API"
+        }
+      ],
+      "fine": "These integrations are still being designed. If you work for a hosting provider, we'd like to hear what you need."
+    },
+    "build": {
+      "eyebrow": "Contribute",
+      "title": "Help build engawa: UI/UX, cloud native, and Rust",
+      "body": "engawa is still in the design stage, and the interface needs work. Join us to help shape how it looks and works. Genkan is written in Rust."
+    },
+    "follow": {
+      "eyebrow": "Follow",
+      "title": "Follow along on GitHub",
+      "body": "Version 0.1 hasn't been released yet. Follow engawahq on GitHub for new repositories and release announcements.",
+      "how": "For release notifications from a specific project, open its repository, select Watch, and choose Releases.",
+      "cta": "Follow @engawahq",
+      "panel": "Projects",
+      "open": "View on GitHub",
+      "designing": "In design",
+      "rows": [
+        {
+          "name": "engawa",
+          "text": "The platform itself. In design, not public yet.",
+          "href": ""
+        },
+        {
+          "name": "genkan",
+          "text": "A general-purpose OIDC issuer for authentication. It has no cluster-admin privileges.",
+          "href": "https://github.com/engawahq/genkan"
+        },
+        {
+          "name": "recommendations",
+          "text": "Curated open-source components, versions, and configuration for adding features with standard tools.",
+          "href": "https://github.com/engawahq/recommendations"
+        }
+      ]
+    },
+    "footer": {
+      "line": "engawa · Apache-2.0 · Named for the Japanese veranda that connects a home to its garden",
+      "home": "engawa home"
+    }
+  },
+  "zh-cn": {
+    "preview": {
+      "label": "预览版本",
+      "message": "这个首页是临时做的预览版本，之后会有人重新设计。现在的样子还请见谅 QQ"
+    },
+    "nav": {
+      "tour": "演示",
+      "why": "为什么",
+      "start": "开始",
+      "k8s": "给工程师",
+      "label": "主导航"
+    },
+    "hero": {
+      "status": "开发中 · 0.1 尚未发布",
+      "h1a": "像 PaaS 一样简单，Agent 也会用，",
+      "h1b": "数据只在你手上",
+      "sub": "engawa 是开发中的 PaaS，计划免费、开源，目前尚未公开。它是把程序放上去，就有网址、有状态界面的那种平台。差别在于它装在你自己的服务器上，一台 VPS 就能跑。",
+      "cta1": "在 GitHub 关注进度",
+      "cta2": "看演示",
+      "note": "Genkan 已集成，0.1 尚未发布。"
+    },
+    "proof": {
+      "label": "三件事",
+      "rows": [
+        {
+          "title": "像 PaaS 一样简单",
+          "body": "界面上只有服务、网址、备份这些你本来就懂的东西。你跟 AI Agent 说「帮我部署上线」，结果会直接出现在 engawa 里。",
+          "extra": ""
+        },
+        {
+          "title": "Agent 也会用",
+          "body": "engawa 不自己发明配置格式，用的是标准的 Kubernetes。Agent 早就学过这一套，不用另外教它。",
+          "extra": ""
+        },
+        {
+          "title": "数据只在你手上",
+          "body": "密码和配置只放在你自己的服务器。engawa 没有自己的数据库，云服务商也没有读取途径。",
+          "extra": "做不到的地方：拥有物理服务器的云服务商，理论上还是读得到内存和磁盘。差别在于他得闯进你的机器、留下痕迹，没办法查一下数据库就拿走。"
+        }
+      ]
+    },
+    "why": {
+      "eyebrow": "为什么",
+      "title": "用过部署平台，你可能遇过这些事",
+      "body": "很多平台把你的配置存进它自己的数据库，再翻译成底层的东西。一开始很好上手，之后就卡在下面这些地方。",
+      "c1": "你遇过的情境",
+      "c2": "engawa 怎么处理",
+      "rows": [
+        {
+          "pain": "想装的东西，平台说不支持。",
+          "detail": "例如想自己跑一套数据库管理工具，平台没有对应的界面。硬装上去，平台上又看不到它。",
+          "fix": "你服务器上有什么，engawa 就显示什么。它还不认得的东西，也会先列出来。"
+        },
+        {
+          "pain": "改好的配置，下次更新又被覆盖。",
+          "detail": "你手动加了一个配置，之后在平台上改别的地方，它又被改回去。",
+          "fix": "engawa 只改你叫它改的那一项，其他配置原封不动。改之前，先让你看会变什么。"
+        },
+        {
+          "pain": "想搬家，却搬不走。",
+          "detail": "东西都用平台自己的格式存着，换平台就得从头再弄一次。",
+          "fix": "服务用的是 Kubernetes 这个通用标准，不是 engawa 的格式。换工具，服务不用重做。"
+        },
+        {
+          "pain": "平台坏了，你连自己的服务都碰不到。",
+          "detail": "平台宕机的时候，你不知道它帮你建了什么，也没办法自己处理。",
+          "fix": "engawa 停了或被移除，服务照样在跑。你也能用命令或 Agent 直接处理，不用等 engawa 回来。"
+        },
+        {
+          "pain": "平台被入侵，你的密码跟着被偷。",
+          "detail": "密码存在平台的数据库里。谁拿到那个数据库，谁就拿到你的密码。",
+          "fix": "密码只放在你自己的服务器。engawa 没有地方存它，也就没有东西能从 engawa 偷走。"
+        },
+        {
+          "pain": "AI Agent 很会写代码，却看不懂平台的配置。",
+          "detail": "每个平台都有自己发明的配置方式，Agent 没学过，只能用猜的。",
+          "fix": "engawa 用标准的 Kubernetes，Agent 本来就会。你用白话交代，它写出来的配置，engawa 直接看得懂。"
+        }
+      ]
+    },
+    "tour": {
+      "eyebrow": "演示",
+      "title": "你跟 Agent 说要什么，engawa 让你看到结果",
+      "stage": "engawa 演示界面",
+      "play": "播放",
+      "pause": "暂停",
+      "replay": "重放",
+      "stepAria": "第 {n} 段：",
+      "reduced": "你的系统设置了减少动态效果，这里改成逐段的静态界面。点上面的段落切换。",
+      "modeLabel": "部署方式",
+      "modeAgent": "用 AI Agent",
+      "modeKubectl": "用 kubectl",
+      "mock": "示意",
+      "leftAgent": "你的 AI Agent",
+      "leftTerm": "你的终端",
+      "ch": [
+        "请 Agent 部署",
+        "界面跟着长出来",
+        "补上缺的配置",
+        "不用 engawa 了",
+        "密码放在哪里"
+      ],
+      "ch0k": "用 kubectl 部署",
+      "caps": [
+        {
+          "body": "你用平常说话的方式交代，Agent 在你的服务器上建好项目 my-shop 和四个服务。它写的是标准的 Kubernetes 配置，这本来就是它会的东西。",
+          "extra": "示意界面，对话和数据都是示例。"
+        },
+        {
+          "body": "engawa 不用你另外登记什么。它看你服务器上已经有的东西，排成项目、服务和网址。状态从「启动中」变成「运行中」，小方块一格格亮起来，每一格是一份正在跑的服务。",
+          "extra": "想看底层，按「高级」，会看到 Deployment、HTTPRoute 这些 Kubernetes 的名字。"
+        },
+        {
+          "body": "新服务一开始就有 HTTPS、资源上限、健康检查和备份。已经在跑的服务，engawa 会照严重程度列出缺什么。你先看会改哪里，再按应用；应用后拿到一张收据，想改回来就按撤销。",
+          "extra": "界面里的配置值是示例。"
+        },
+        {
+          "body": "移除 engawa 之后，网站照样开得起来。服务不靠 engawa 活着。就算不用我们，你的服务还在，也还是你的。",
+          "extra": ""
+        },
+        {
+          "body": "密码只放在你自己的服务器。engawa 的界面默认只显示名称，云服务商也没有读取途径。",
+          "extra": "做不到的地方：拥有物理服务器的云服务商，理论上还是读得到内存和磁盘。差别在于他得闯进你的机器、留下痕迹，没办法查一下数据库就拿走。"
+        }
+      ],
+      "cap0k": "习惯自己打命令也行。用 kubectl 部署，engawa 一样看得到，不用先在 engawa 里登记。",
+      "disclaimer": "交互示意 · 不会连接或变更任何真实集群",
+      "noscript": "启用 JavaScript 即可播放交互示意。这些界面不会连接到真实集群。"
+    },
+    "chat": {
+      "title": "你的 AI Agent",
+      "empty": "还没有对话",
+      "placeholder": "跟你的 Agent 说要做什么…",
+      "typing": "Agent 正在处理",
+      "codeLabel": "Agent 运行的命令（示意）",
+      "m0u": "帮我把这个商店网站放上去，要有网址，也要数据库。",
+      "m0a": "好了。我在你的服务器上开了一个项目 my-shop，放了四个服务：网站 web、后端 api、数据库 db、后台任务 worker。网址是 shop.example.com。",
+      "m0b": "你可以打开 engawa 看看。",
+      "m1u": "现在状况怎么样？",
+      "m1a": "四个服务都在跑了，网址也连得上。每个服务的状态，在 engawa 上都看得到。",
+      "note2": "这一段在 engawa 里操作：先看会改哪里，再按应用。",
+      "m3u": "如果哪天我不想用 engawa 了呢？",
+      "m3a": "我把 engawa 移除了。",
+      "m3b": "服务都还在跑，网站也连得上。",
+      "m4u": "我的数据库密码存在哪里？会不会泄露？",
+      "m4a": "存在你自己的服务器里。engawa 界面上只显示名称，不显示内容；云服务商也没有读取途径。",
+      "t1": "# 打开 engawa：项目和服务一个个出现",
+      "t2": "# 这一段在 engawa 里操作：看会改哪里，再按应用",
+      "t4": "# 密码只在这台服务器里，engawa 界面只显示名称"
+    },
+    "ui": {
+      "paneLabel": "engawa",
+      "sideLabel": "engawa 侧栏（示意）",
+      "projects": "项目",
+      "suggestions": "建议",
+      "capabilities": "能力",
+      "expand": "展开侧栏",
+      "collapse": "收起侧栏",
+      "empty": "还没有项目",
+      "tab1": "概览",
+      "tab2": "架构",
+      "tab3": "服务",
+      "adv": "高级",
+      "services": "服务",
+      "running": "运行中",
+      "starting": "启动中",
+      "pods": "运行中的副本数",
+      "urls": "网址",
+      "noUrl": "还没有网址",
+      "storage": "存储空间",
+      "inUse": "使用中",
+      "uploads": "上传的文件",
+      "dbData": "数据库的数据",
+      "backup": "备份",
+      "noBackup": "没有计划",
+      "daily": "每天 03:00",
+      "example": "时间是示例",
+      "backing": "背后的对象",
+      "sugTitle": "建议",
+      "sugSub": "依严重程度排列",
+      "sev": {
+        "high": "高",
+        "medium": "中"
+      },
+      "review": "看 diff",
+      "undo": "撤销",
+      "applied": "已应用",
+      "receipt": "已应用。想改回来，按撤销。",
+      "cancel": "取消",
+      "apply": "应用",
+      "affected": "受影响的服务：",
+      "exampleCfg": "示例配置",
+      "goneTitle": "engawa 已移除",
+      "goneBody": "服务还在跑，网址也还连得上。",
+      "gaps": [
+        {
+          "s": "high",
+          "text": "db 没有备份计划",
+          "title": "添加 db 的每日备份",
+          "affected": "db"
+        },
+        {
+          "s": "medium",
+          "text": "web、api 没有资源上限",
+          "title": "替 web、api 加上资源上限",
+          "affected": "web、api"
+        },
+        {
+          "s": "medium",
+          "text": "worker 没有健康检查",
+          "title": "替 worker 加上健康检查",
+          "affected": "worker"
+        }
+      ],
+      "serviceCount": "{n} 个",
+      "openCount": "{n} 项"
+    },
+    "secrets": {
+      "title": "engawa 和云服务商都看不到你的密码",
+      "cluster": "你的服务器",
+      "provider": "云服务商",
+      "noPath": "没有读取途径",
+      "tryWord": "想读取",
+      "blocked": "挡下",
+      "hidden": "内容不显示",
+      "items": [
+        "数据库密码",
+        "API 密钥",
+        "HTTPS 证书"
+      ]
+    },
+    "safe": {
+      "eyebrow": "出事的时候",
+      "title": "最坏的情况，会怎样",
+      "body": "我们不想只说「很安全」。下面是几种坏情况，以及 engawa 在每一种情况下做得到、做不到的事。",
+      "rows": [
+        {
+          "q": "engawa 自己被入侵",
+          "a": "engawa 用你自己的身份操作服务器，手上没有比你更大的权限。设计目标是：攻击者拿到的权限，不会比当下登录的人多。"
+        },
+        {
+          "q": "云服务商的系统被入侵",
+          "a": "你的密码不在云服务商的数据库里，那里没有东西可拿。"
+        },
+        {
+          "q": "云服务商自己想看",
+          "a": "拥有物理服务器的云服务商，理论上读得到内存和磁盘，这点 engawa 挡不住。差别在于他得闯进你的机器、留下痕迹。真的在意，就用自己的硬件。"
+        },
+        {
+          "q": "engawa 停了，或被移除",
+          "a": "服务照跑。设计上，每次发布前都要先通过移除测试：拿掉 engawa，再确认服务还活着。"
+        }
+      ]
+    },
+    "start": {
+      "eyebrow": "开始",
+      "title": "从你手上有的开始",
+      "c1": "你手上有",
+      "c2": "怎么开始",
+      "c3": "要装在哪",
+      "rows": [
+        {
+          "who": "一台 VPS",
+          "how": "在服务器上粘贴一行命令，装好 k3s（轻量版的 Kubernetes）和 engawa，再用浏览器和 passkey（指纹或手机解锁）创建管理员。从 Dokploy 或 Coolify 搬过来，也走这条路。",
+          "where": "都装在那台服务器上"
+        },
+        {
+          "who": "已经有 Kubernetes 集群",
+          "how": "在自己的电脑上运行 engawa ui，用你现有的连接配置打开界面。",
+          "where": "集群里不用装东西"
+        },
+        {
+          "who": "不想管服务器",
+          "how": "由云服务商代管的 Managed engawa。",
+          "where": "还没有，目前没有云服务商提供"
+        }
+      ],
+      "note": "这里介绍的是使用场景与操作流程；0.1 尚未发布。"
+    },
+    "status": {
+      "eyebrow": "进度",
+      "title": "现在做到哪里",
+      "body": "0.1 尚未发布，engawa 目前尚未开源。以下是开发版目前的实现进度。",
+      "rows": [
+        {
+          "k": "ok",
+          "label": "项目与服务",
+          "text": "从 Kubernetes 资源整理项目、服务和连接，可查看服务状态、事件和资源用量。"
+        },
+        {
+          "k": "ok",
+          "label": "日志与终端",
+          "text": "可在浏览器中跟踪 Pod 日志、连接容器终端，操作仍受用户自己的 Kubernetes 权限约束。"
+        },
+        {
+          "k": "ok",
+          "label": "变更预览与回滚",
+          "text": "先预览配置和 YAML 的差异，确认后再应用变更；也能比较工作负载版本，通过相同流程回滚。"
+        },
+        {
+          "k": "ok",
+          "label": "已集成 Genkan",
+          "text": "passkey 登录和短期管理员提权都已接入。每次操作使用用户的令牌，由 kube-apiserver 根据 RBAC 判断权限。"
+        },
+        {
+          "k": "ok",
+          "label": "诊断与 Agent 工具",
+          "text": "已有常见故障诊断和配置缺口建议；只读 MCP 与 engawactl doctor 可用于查询集群状态。"
+        },
+        {
+          "k": "progress",
+          "label": "持续完善",
+          "text": "接下来的重点是界面易用性、错误提示与健康状态展示，以及 API 结构整理。"
+        }
+      ]
+    },
+    "k8s": {
+      "eyebrow": "给懂 Kubernetes 的人",
+      "title": "给懂 Kubernetes 的人",
+      "body": "上面刻意不讲术语。这里是实际的做法：界面怎么从对象读出来、写入怎么做、安全怎么分层。",
+      "open": "展开技术细节",
+      "close": "收起技术细节",
+      "mapTitle": "界面从对象读出来，没有另外存",
+      "mapBody": "Namespace、Deployment、Service 这些对象本身就是数据。engawa 看它们彼此怎么引用，排成项目、服务和网址。你用 kubectl、Argo CD 或 Agent 改了东西，界面跟着变。",
+      "colK": "Kubernetes 对象",
+      "colV": "在 engawa 显示为",
+      "rows": [
+        {
+          "k": "Namespace",
+          "v": "项目"
+        },
+        {
+          "k": "Deployment, StatefulSet",
+          "v": "服务"
+        },
+        {
+          "k": "Service, HTTPRoute",
+          "v": "网址"
+        },
+        {
+          "k": "PersistentVolumeClaim",
+          "v": "存储空间"
+        },
+        {
+          "k": "Secret",
+          "v": "变量（不显示值）"
+        },
+        {
+          "k": "CloudNativePG Cluster",
+          "v": "数据库"
+        }
+      ],
+      "hint": "选左边一列，看 engawa 读哪个字段",
+      "readAs": "engawa 读成",
+      "hidden": "值不显示",
+      "techTitle": "上面那些痛点，技术上怎么处理",
+      "tech": [
+        {
+          "k": "读任何对象",
+          "v": "项目是带 label 的 Namespace，服务是 Deployment、StatefulSet 或数据库 operator 的 CR，网址是 Service 与 HTTPRoute。还没有专用适配器的 operator，会以通用方式显示。"
+        },
+        {
+          "k": "只改你改的字段",
+          "v": "写入先做 dry-run、给你看 diff，再用 server-side apply（field manager 是 engawa）提交，不碰别人管的字段。由 Argo CD 或 Flux 管的对象，改成导出 patch 或开 PR；由 Helm 管的，会提醒你下次 helm upgrade 会覆盖。"
+        },
+        {
+          "k": "没有自己的 app 模型",
+          "v": "engawa 没有数据库，界面上的一切都从集群读出来。补上的东西是 HPA、cert-manager 的证书、K8up 的备份计划这类原生或上游对象，engawa 不在也照常运行。"
+        },
+        {
+          "k": "用你的身份",
+          "v": "所有读写都以用户自己的身份送到 kube-apiserver。集群内模式下，令牌由 kube-apiserver 自己验证（Structured Authentication Configuration），engawa 不需要 impersonate 权限，也不缓存 Secret 的值。"
+        },
+        {
+          "k": "给 Agent 和自动化",
+          "v": "界面做得到的，API 都做得到。每个响应都带着背后对象的 apiVersion、kind、name 与字段路径，界面的「背后的对象」面板就是靠它。"
+        }
+      ],
+      "layTitle": "分层：先什么都不装，需要时再加",
+      "layBody": "每往上一层，就多一个组件，也多一点要信任的东西。Genkan 已集成，用于签发用户令牌。",
+      "layLabel": "层",
+      "layBuild": "从 L0 逐层叠上",
+      "layNone": "集群里没有 engawa 的组件",
+      "zoneCluster": "你的集群",
+      "layers": [
+        {
+          "lv": "L0–L1",
+          "where": "你的电脑",
+          "trusts": "你的 kubeconfig。集群里什么都不装，所以这两层没有「engawa 被攻破」这回事。"
+        },
+        {
+          "lv": "L2",
+          "where": "集群里的 engawa",
+          "trusts": "你现有的 OIDC。令牌由 kube-apiserver 自行验证，engawa 只负责转发，不冒充任何人。"
+        },
+        {
+          "lv": "L3",
+          "where": "Genkan 身份验证",
+          "trusts": "Genkan 签发的令牌，给没有自己 OIDC 的团队。Genkan 本身不持有 cluster-admin。"
+        }
+      ],
+      "principle": "设计目标：不论在哪一层，engawa 的组件被攻破时，攻击者拿到的权限都不会比当下那位用户多。"
+    },
+    "providers": {
+      "eyebrow": "给云服务商",
+      "title": "给云服务商：让客户在你的服务器上用这套界面",
+      "body": "engawa 尚未公开，计划以 Apache-2.0 许可开源，不收许可费。你的客户在你的服务器上，用项目、服务和网址管理自己的服务；服务器、存储、备份这些有成本的东西由你来卖。客户的密码留在客户自己的服务器上，你不必替他们保管。",
+      "cta": "到 GitHub 找我们",
+      "panel": "规划中的集成点",
+      "points": [
+        {
+          "text": "集群注册与跨集群管理的 API"
+        },
+        {
+          "text": "接你现有的登录系统（任何 OIDC 提供商）"
+        },
+        {
+          "text": "版本与健康状态的 API"
+        },
+        {
+          "text": "关掉内置界面，只用 API 做你自己的界面"
+        }
+      ],
+      "fine": "这些都还在设计。如果你在云服务商工作，欢迎带着实际需求来讨论。"
+    },
+    "build": {
+      "eyebrow": "一起做",
+      "title": "找一起做的人：UI/UX、云原生、Rust",
+      "body": "engawa 还在设计阶段，界面现在很粗糙。这时候加入，能一起决定它长什么样子。Genkan 是用 Rust 写的。"
+    },
+    "follow": {
+      "eyebrow": "关注",
+      "title": "到 GitHub 关注进度",
+      "body": "0.1 尚未发布。关注 engawahq 组织，新的仓库和发布会出现在你的 GitHub 动态。",
+      "how": "只想收某一个项目的发布通知，到那个 repo 按 Watch，选 Releases。",
+      "cta": "关注 @engawahq",
+      "panel": "项目",
+      "open": "打开",
+      "designing": "设计中",
+      "rows": [
+        {
+          "name": "engawa",
+          "text": "平台本身。还在设计，尚未公开。",
+          "href": ""
+        },
+        {
+          "name": "genkan",
+          "text": "登录组件（通用的 OIDC 令牌签发服务），自己不持有 cluster-admin。",
+          "href": "https://github.com/engawahq/genkan"
+        },
+        {
+          "name": "recommendations",
+          "text": "挑选过的开源组件、版本与配置，用标准做法补上缺的功能。",
+          "href": "https://github.com/engawahq/recommendations"
+        }
+      ]
+    },
+    "footer": {
+      "line": "engawa · Apache-2.0 · engawa 指连接房屋与庭院的日式走廊",
+      "home": "engawa 首页"
+    }
+  }
+}

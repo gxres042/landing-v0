@@ -1,0 +1,316 @@
+---
+import copy from '../data/landing.json';
+import DemoTour from './DemoTour.astro';
+import TechnicalDetails from './TechnicalDetails.astro';
+import Icon from './Icon.astro';
+
+interface Props {
+	lang?: 'zh' | 'en' | 'zh-cn';
+}
+
+const { lang = 'zh' } = Astro.props;
+const t = copy[lang];
+
+const pad = (n: number) => String(n).padStart(2, '0');
+
+const pillTone: Record<string, string> = {
+	ok: 'bg-lime text-ink',
+	progress: 'bg-white text-ink ring-1 ring-line',
+	idle: 'bg-surface text-muted ring-1 ring-line',
+};
+const dotTone: Record<string, string> = {
+	ok: 'bg-ink',
+	progress: 'bg-[#c4a35a]',
+	idle: 'bg-muted',
+};
+---
+
+<section class="wrap flex flex-wrap items-center gap-x-16 gap-y-10 pt-[72px] pb-[72px] max-md:pt-10 max-md:pb-12">
+	<div class="min-w-0 flex-[999_1_560px]">
+		<span class="pill inline-flex items-center gap-2">
+			<span class="size-1.5 rounded-full bg-[#c4a35a]" aria-hidden="true"></span>
+			{t.hero.status}
+		</span>
+		<h1 class:list={['heading-xl mt-[22px] text-balance text-ink', lang !== 'en' ? 'leading-[1.22] tracking-[-0.01em]' : 'leading-[1.1] tracking-[-0.035em]']}>
+			{t.hero.h1a}<mark class="hl max-sm:inline-block">{t.hero.h1b}</mark>
+		</h1>
+		<p class="lede max-w-[32em] text-[19px]">{t.hero.sub}</p>
+		<div class="mt-8 flex flex-wrap gap-2.5">
+			<a class="button button-primary inline-flex h-11 items-center gap-2 px-5 text-[15px] no-underline" href="https://github.com/engawahq">
+				{t.hero.cta1}
+				<span class="arrow"><Icon name="arrow-right" /></span>
+			</a>
+			<a class="button button-outline inline-flex h-11 items-center gap-2 px-5 text-[15px] no-underline" href="#tour">{t.hero.cta2}</a>
+		</div>
+		<p class="mt-3.5 text-sm leading-[22px] text-muted">{t.hero.note}</p>
+	</div>
+	<div class="hero-mark hidden min-w-0 flex-[1_1_220px] justify-center md:flex" aria-hidden="true">
+		<svg class="h-auto w-60 overflow-visible" viewBox="170 180 685 665" focusable="false">
+			<path class="leaf leaf-1" d="M403.99625,196.31675 C356.63075,198.4855 298.85525,204.211 257.1285,209.67625 C217.48375,214.7945 192.5865,240.55925 192.5865,274.8255 C192.5865,300.41675 204.3845,320.803 222.7755,333.1215 C247.7595,350.03775 280.46425,358.7995 301.28425,377.27725 C325.74775,398.878 327.743,429.067 342.57725,454.83175 C359.40675,484.15325 394.10675,498.6405 424.903,498.6405 C461.685,498.6405 484.84725,483.45925 487.1895,444.42175 C490.74625,387.6005 488.2305,323.49225 480.85675,271.09525 C473.483,219.21875 450.234,194.40825 403.99625,196.31675 Z"></path>
+			<path class="leaf leaf-2" d="M618.3555,185.38625 C578.7975,185.38625 520.76175,220.3465 520.934862,295.21175 C521.28225,338.3265 525.533,394.45375 534.46825,429.761 C547.82775,482.07125 578.88425,501.85025 649.15175,504.62625 C714.90825,507.3155 797.0605,491.96075 828.03025,457.6945 C843.99225,440.08425 849.8045,415.187 848.937,398.531 C847.896,373.7205 837.05225,348.563 819.789,336.50475 C805.0415,326.355 785.2625,326.09475 767.30525,327.049 C743.18875,328.52375 724.5375,324.88025 709.79,308.22425 C698.07875,294.9515 694.78225,277.6015 693.39425,261.37925 C691.31225,237.78325 685.06625,218.2645 671.7935,204.99175 C659.128,192.32625 637.52725,185.38625 618.3555,185.38625 Z"></path>
+			<path class="leaf leaf-3" d="M348.216,524.23175 C270.40125,524.23175 198.659,568.12725 180.7885,644.29375 C177.05825,657.82675 175.14975,671.273 175.41,682.11675 C177.23175,770.515 240.38575,835.404 337.6325,838.18 C347.869,838.61375 357.238,837.6595 365.3925,836.2715 C449.10625,821.78425 489.6185,746.13825 489.6185,672.314 C489.6185,577.32275 430.19475,524.23175 348.216,524.23175 Z"></path>
+			<path class="leaf leaf-4" d="M590.769,532.82 C548.52175,532.82 516.3375,558.41125 515.73025,608.20575 C515.20975,638.1345 521.97625,671.273 526.48725,698.1655 C530.65125,722.54225 532.90675,747.0925 537.24425,766.26425 C547.48075,812.24175 584.3495,833.06175 618.09525,833.06175 C634.75125,833.06175 652.7085,827.9435 669.79825,816.8395 C717.85775,785.34925 776.15375,731.56425 808.5115,699.29325 C825.60125,682.2035 832.88825,662.85825 832.54125,646.20225 C832.281,630.327 825.77475,615.059 815.972,600.91875 C802.6125,581.747 782.74675,570.38275 754.46625,564.31025 C715.77575,555.98225 671.7935,546.1795 637.18025,538.80575 C620.52425,535.33575 604.56225,532.82 590.769,532.82 Z"></path>
+		</svg>
+	</div>
+</section>
+
+<section class="wrap pb-2" aria-label={t.proof.label}>
+	<ol class="m-0 list-none border-t border-ink p-0">
+		{
+			t.proof.rows.map((row, i) => (
+				<li class="flex gap-x-6 gap-y-1.5 border-b border-line py-[22px]">
+					<span class="w-10 shrink-0 font-mono text-xs leading-7 text-muted">{pad(i + 1)}</span>
+					<div class="grid min-w-0 flex-1 grid-cols-1 items-start gap-x-8 gap-y-1.5 md:grid-cols-[minmax(0,1fr)_minmax(0,2.2fr)]">
+						<h2 class="m-0 text-xl leading-snug font-semibold text-ink md:row-span-2 md:text-[20px]">{row.title}</h2>
+						<p class="m-0 text-body">{row.body}</p>
+						{row.extra ? <p class="m-0 text-sm leading-relaxed text-muted">{row.extra}</p> : null}
+					</div>
+				</li>
+			))
+		}
+	</ol>
+</section>
+
+<section id="why" class="wrap section-space">
+	<div class="max-w-[680px]">
+		<div class="eyebrow"><span>01</span>{t.why.eyebrow}</div>
+		<h2 class="heading-lg text-ink">{t.why.title}</h2>
+		<p class="lede">{t.why.body}</p>
+	</div>
+	<div class="mt-10 border-t border-ink" role="table" aria-label={t.why.title}>
+		<div class="flex flex-wrap gap-x-8 gap-y-1.5 border-b border-line py-2.5 text-xs text-muted" role="row">
+			<span class="w-10 shrink-0" role="columnheader"></span>
+			<span class="min-w-0 flex-[1.2_1_340px]" role="columnheader">{t.why.c1}</span>
+			<span class="min-w-0 flex-[1_1_320px]" role="columnheader">{t.why.c2}</span>
+		</div>
+		{
+			t.why.rows.map((row, i) => (
+				<div class="flex flex-wrap gap-x-8 gap-y-1.5 border-b border-line py-6 hover:bg-surface" role="row">
+					<span class="w-10 shrink-0 font-mono text-xs leading-7 text-muted" role="rowheader">{pad(i + 1)}</span>
+					<div class="min-w-0 flex-[1.2_1_340px]" role="cell">
+						<p class="m-0 text-[19px] leading-normal font-semibold text-ink">{row.pain}</p>
+						<p class="mt-1.5 mb-0 text-[15px] leading-relaxed text-muted">{row.detail}</p>
+					</div>
+					<p class="m-0 min-w-0 flex-[1_1_320px] text-ink" role="cell">{row.fix}</p>
+				</div>
+			))
+		}
+	</div>
+</section>
+
+<DemoTour lang={lang} />
+
+<section id="safe" class="wrap section-space">
+	<div class="max-w-[680px]">
+		<div class="eyebrow"><span>03</span>{t.safe.eyebrow}</div>
+		<h2 class="heading-lg text-ink">{t.safe.title}</h2>
+		<p class="lede">{t.safe.body}</p>
+	</div>
+	<dl class="mt-9 border-t border-ink">
+		{
+			t.safe.rows.map((row) => (
+				<div class="flex flex-wrap gap-x-8 gap-y-1 border-b border-line py-5">
+					<dt class="m-0 min-w-0 flex-[1_1_240px] text-lg leading-normal font-semibold text-ink">{row.q}</dt>
+					<dd class="m-0 min-w-0 flex-[2.4_1_380px] text-body">{row.a}</dd>
+				</div>
+			))
+		}
+	</dl>
+</section>
+
+<section id="start" class="wrap section-space">
+	<div class="max-w-[680px]">
+		<div class="eyebrow"><span>04</span>{t.start.eyebrow}</div>
+		<h2 class="heading-lg text-ink">{t.start.title}</h2>
+	</div>
+	<div class="mt-9 border-t border-ink">
+		<div class="flex flex-wrap gap-x-6 gap-y-1 border-b border-line py-2.5 text-xs text-muted">
+			<span class="w-10 shrink-0"></span>
+			<span class="min-w-0 flex-[1_1_180px]">{t.start.c1}</span>
+			<span class="min-w-0 flex-[2_1_320px]">{t.start.c2}</span>
+			<span class="min-w-0 flex-[1.2_1_200px]">{t.start.c3}</span>
+		</div>
+		{
+			t.start.rows.map((row, i) => (
+				<div class="flex flex-wrap gap-x-6 gap-y-1 border-b border-line py-5 hover:bg-surface">
+					<span class="w-10 shrink-0 font-mono text-xs leading-7 text-muted">{pad(i + 1)}</span>
+					<span class="min-w-0 flex-[1_1_180px] text-lg font-semibold text-ink">{row.who}</span>
+					<span class="min-w-0 flex-[2_1_320px] text-body">{row.how}</span>
+					<span class="min-w-0 flex-[1.2_1_200px] text-[15px] text-muted">{row.where}</span>
+				</div>
+			))
+		}
+	</div>
+	<p class="mt-4 max-w-[44em] text-sm leading-[22px] text-muted">{t.start.note}</p>
+</section>
+
+<section id="status" class="wrap section-space">
+	<div class="max-w-[680px]">
+		<div class="eyebrow"><span>05</span>{t.status.eyebrow}</div>
+		<h2 class="heading-lg text-ink">{t.status.title}</h2>
+		<p class="lede">{t.status.body}</p>
+	</div>
+	<div class="mt-9 border-t border-ink">
+		{
+			t.status.rows.map((row) => (
+				<div class="flex flex-wrap items-start gap-x-6 gap-y-2 border-b border-line py-5 hover:bg-surface">
+					<span class="min-w-0 flex-[0_1_200px]">
+						<span class:list={['pill inline-flex items-center gap-2 text-[13px]', pillTone[row.k] ?? pillTone.progress]}>
+							<span class:list={['size-1.5 rounded-full', dotTone[row.k] ?? dotTone.progress, row.k === 'progress' && 'motion-safe:animate-pulse']} aria-hidden="true"></span>
+							{row.label}
+						</span>
+					</span>
+					<span class="min-w-0 flex-[3_1_360px] text-body">{row.text}</span>
+				</div>
+			))
+		}
+	</div>
+</section>
+
+<TechnicalDetails copy={t.k8s} />
+
+<section id="providers" class="mt-[112px] bg-lime/25 max-md:mt-20">
+	<div class="wrap flex flex-wrap items-center gap-x-14 gap-y-10 py-20">
+		<div class="min-w-0 flex-[1_1_360px]">
+			<div class="eyebrow"><span>07</span>{t.providers.eyebrow}</div>
+			<h2 class="heading-lg text-ink">{t.providers.title}</h2>
+			<p class="lede">{t.providers.body}</p>
+			<div class="mt-7">
+				<a class="button button-outline inline-flex h-11 items-center gap-2 px-5 text-[15px] no-underline" href="https://github.com/engawahq">
+					{t.providers.cta}
+					<span class="arrow"><Icon name="arrow-right" /></span>
+				</a>
+			</div>
+		</div>
+		<div class="min-w-0 flex-[1_1_380px]">
+			<div class="overflow-hidden rounded-2xl border border-line bg-white text-sm leading-5">
+				<header class="border-b border-line px-4 py-3">
+					<h2 class="m-0 text-base font-semibold text-ink">{t.providers.panel}</h2>
+				</header>
+				<ul class="m-0 list-none p-0">
+					{
+						t.providers.points.map((point) => (
+							<li class="flex min-h-12 items-center border-b border-line px-4 py-2.5 last:border-b-0">{point.text}</li>
+						))
+					}
+				</ul>
+			</div>
+			<p class="mt-4 max-w-[44em] text-sm leading-[22px] text-muted">{t.providers.fine}</p>
+		</div>
+	</div>
+</section>
+
+<section class="wrap section-space">
+	<div class="flex flex-wrap items-end justify-between gap-x-14 gap-y-6">
+		<div class="min-w-0 flex-[1_1_380px]">
+			<div class="eyebrow"><span>08</span>{t.build.eyebrow}</div>
+			<h2 class="heading-lg text-ink">{t.build.title}</h2>
+			<p class="lede">{t.build.body}</p>
+		</div>
+		<div class="flex flex-wrap gap-2.5">
+			<a class="button button-outline inline-flex h-11 items-center px-5 text-[15px] no-underline" href="https://github.com/engawahq">@engawahq</a>
+			<a class="button button-outline inline-flex h-11 items-center px-5 text-[15px] no-underline" href="https://github.com/engawahq/genkan">Genkan</a>
+			<a class="button button-outline inline-flex h-11 items-center px-5 text-[15px] no-underline" href="https://github.com/engawahq/recommendations">recommendations</a>
+		</div>
+	</div>
+</section>
+
+<section id="follow" class="mt-[112px] bg-ink text-[oklch(0.97_0.01_140)] max-md:mt-20">
+	<div class="wrap flex flex-wrap items-start gap-x-16 gap-y-12 py-24">
+		<div class="min-w-0 flex-[1_1_320px]">
+			<div class="eyebrow text-[oklch(0.86_0.02_140)] [&_span]:bg-lime [&_span]:text-ink"><span>09</span>{t.follow.eyebrow}</div>
+			<h2 class="heading-lg text-lime">{t.follow.title}</h2>
+			<p class="lede text-[oklch(0.86_0.02_140)]">{t.follow.body}</p>
+			<div class="mt-7">
+				<a class="button inline-flex h-11 items-center gap-2 bg-lime px-5 text-[15px] font-semibold text-ink no-underline hover:bg-[#e4f7b0]" href="https://github.com/engawahq">
+					{t.follow.cta}
+					<span class="arrow"><Icon name="arrow-right" /></span>
+				</a>
+			</div>
+			<p class="mt-4 max-w-[440px] text-sm leading-[22px] text-[oklch(0.78_0.025_140)]">{t.follow.how}</p>
+			<img class="follow-mark mt-12 hidden h-auto w-[180px] md:block" src="/brand/mark.svg" alt="" width="180" height="175" />
+		</div>
+		<div class="min-w-0 flex-[1.1_1_420px]">
+			<div class="overflow-hidden rounded-2xl bg-white text-ink">
+				<header class="flex flex-wrap items-center justify-between gap-2 border-b border-line px-4 py-3">
+					<h2 class="m-0 text-base font-semibold">{t.follow.panel}</h2>
+					<span class="font-mono text-xs text-muted" translate="no">github.com/engawahq</span>
+				</header>
+				<ul class="m-0 list-none p-0">
+					{
+						t.follow.rows.map((row) => (
+							<li class="flex min-h-[60px] flex-wrap items-center gap-x-3 gap-y-1.5 border-b border-line px-4 py-2.5 last:border-b-0">
+								<div class="min-w-0 flex-[1_1_220px]">
+									<div class="font-mono text-[13px] leading-5 font-semibold" translate="no">{row.name}</div>
+									<div class="text-[13px] leading-5 text-muted">{row.text}</div>
+								</div>
+								{row.href ? (
+									<a class="button button-outline inline-flex h-11 items-center px-3.5 text-sm no-underline" href={row.href}>{t.follow.open}</a>
+								) : (
+									<span class="pill inline-flex items-center gap-2 text-[13px]">
+										<span class="size-1.5 rounded-full bg-[#c4a35a]" aria-hidden="true"></span>
+										{t.follow.designing}
+									</span>
+								)}
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.hl {
+		color: #253326;
+		padding: 0 0.14em;
+		border-radius: 8px;
+		-webkit-box-decoration-break: clone;
+		box-decoration-break: clone;
+		background: linear-gradient(#d7f593, #d7f593) no-repeat 0 0 / 100% 100%;
+		animation: hl-sweep 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.35s backwards;
+	}
+	@keyframes hl-sweep {
+		from {
+			background-size: 0% 100%;
+		}
+	}
+	.leaf {
+		fill: #253326;
+		transform-box: fill-box;
+		transform-origin: center;
+		transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+		animation: leaf-in 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+	}
+	.leaf-2 { animation-delay: 0.08s; }
+	.leaf-3 { animation-delay: 0.16s; }
+	.leaf-4 { animation-delay: 0.24s; }
+	@keyframes leaf-in {
+		from {
+			opacity: 0;
+			transform: scale(0.5) rotate(-10deg);
+		}
+	}
+	.hero-mark:hover .leaf-1 { transform: translate(-8px, -8px); }
+	.hero-mark:hover .leaf-2 { transform: translate(8px, -8px); }
+	.hero-mark:hover .leaf-3 { transform: translate(-8px, 8px); }
+	.hero-mark:hover .leaf-4 { transform: translate(8px, 8px); }
+	.arrow { display: inline-block; transition: transform 0.2s cubic-bezier(0.2, 0.7, 0.2, 1); }
+	a:hover .arrow { transform: translateX(3px); }
+	.follow-mark { transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1); }
+	.follow-mark:hover { transform: rotate(-6deg); }
+	@media (prefers-reduced-motion: reduce) {
+		.hl,
+		.leaf,
+		.follow-mark {
+			animation: none;
+			transition: none;
+		}
+		.hero-mark:hover .leaf,
+		.follow-mark:hover,
+		a:hover .arrow {
+			transform: none;
+		}
+	}
+</style>

@@ -1,0 +1,177 @@
+---
+title: '打造 Zero-Trust PaaS'
+description: '让 PaaS 替你保管机密，这件事本身是不是就有问题？平台手上不放任何权限，每个动作都用用户自己的 Kubernetes 凭证去做。'
+pubDate: 'Oct 16 2026'
+---
+
+import TrustStructure from '../../../components/figures/TrustStructure.tsx';
+import HotelKeycard from '../../../components/figures/HotelKeycard.tsx';
+import LoginFlow from '../../../components/figures/LoginFlow.tsx';
+
+看完 Zeabur 8 月的事故报告，我一直在想一个问题：让 PaaS 替你保管机密，这件事本身是不是就有问题？🤔
+
+我想到的另一条路是：平台手上不放任何权限，每个动作都用用户自己的 Kubernetes 凭证去做，放不放行交给 kube-apiserver 判断。这篇会讲我为什么这样想，还有我在 Genkan 和 engawa 怎么把它做出来。
+
+## 为什么 PaaS 一定要拿到你的机密？
+
+你在 Vercel、Netlify、Render、Railway 这类平台设好 `DATABASE_URL`，按下 deploy，几十秒后服务就跑起来了。有想过这个值是怎么进到你的容器的吗？
+
+站在平台这一侧看，答案很简单：我们得先知道值是什么，别无他法。环境变量最后要变成程序看得到的明文，所以构建和启动的时候，平台一定有某个组件拿着明文。Zeabur 的公告也写了，迁移之后 Zeabur "only reads this data when building and deploying"（只在构建和部署时读取这些数据）[^1]。
+
+所以你其实是在信任我们这些做平台的人。平台拿着一把高权限的凭证操作所有客户的项目，再从里面切一小块权限给你。界面上的权限配置做得再细，也都是从平台手上那把凭证分出来的。
+
+对攻击者来说，这很划算。不用一个客户一个客户慢慢打，打穿平台一次就够了。
+
+## 这种事真的发生过吗？
+
+有，而且不只一次。我整理了五起，入口都不一样，最后被带走的都是平台手上的机密。
+
+| 时间 | 平台 | 入口 | 外泄内容 |
+| --- | --- | --- | --- |
+| 2026-08 | Zeabur | 用户服务的 CVE → 集群内网 → 无范围的 Legacy API Key → AWS root key → 维护任务 → 主数据库 [^2] | 项目环境变量的名称与值 |
+| 2026-04 | Vercel | 第三方 AI 工具 Context.ai 的 OAuth app 被入侵 → 员工的 Google Workspace → 员工的 Vercel 账号 [^3] | 未标为 sensitive 的环境变量 |
+| 2022-12 | CircleCI | 工程师笔记本电脑的恶意软件，偷走已通过 2FA 的 SSO session cookie [^4] | 客户的环境变量、token、密钥；加密密钥也从运行中的进程被取出 |
+| 2022-04 | Heroku、Travis CI（经 GitHub） | 发给这两个集成服务的 OAuth token 被盗 [^5] | 数十个组织的私有 repo，npm 的 AWS 密钥由此被取得 |
+| 2021-01 | Codecov | Bash Uploader 被篡改 [^6] | CI 环境的 `env` 输出 |
+
+### Zeabur 8 月是怎么走到数据库的？
+
+我一开始以为这是一起数据库外泄。把 Zeabur 公开的事故报告从头读一遍才发现，数据库只是最后一站 [^2]。下面的经过都是照这份报告整理的。
+
+起点是某个客户部署的 NextChat v2.16.1。它的 MCP 功能有授权检查不足的漏洞（CVE-2026-7644），攻击者靠这个在容器里执行代码。这个容器跑在共享集群上，从内网连得到路由缓存，而缓存里刚好存着 Legacy API Key。这种 key 没有范围限制，也不会过期。攻击者拿了其中一把团队管理员的 key 去读内部管理服务的环境变量，在里面找到一把长效的 AWS root key。
+
+接下来他接管了东京的共享集群。集群上有个定时维护任务，它有一条通往生产环境的私有网络路径，身上还带着权限过大的数据库凭证。从 UTC 11:52 开始，项目的环境变量被一批一批读出来。隔天凌晨，Zeabur 收到第一则 API 密钥遭滥用的通报 [^2]。
+
+### 那 Vercel 呢？
+
+Vercel 这次连数据库都没碰。照公告的说法，一位员工在用的第三方 AI 工具 Context.ai 先被入侵，攻击者从那里拿到这位员工的 Google Workspace 账号，再登录他的 Vercel 账号，把没标成 sensitive 的环境变量列出来、解密 [^3]。公告建议大家用 sensitive 环境变量，让 "secret values are protected from being read in the future"（机密值日后不会被读取）[^3]。可是这次没标的，已经被读走了。
+
+### 把入口守好就好了吗？
+
+守不完的。应用程序漏洞、员工笔记本电脑、OAuth app、被改过的 CI 脚本，入口每次都不一样。终点倒是每次都一样，就是平台读得到的机密。
+
+CircleCI 的数据存起来是加密的，但攻击者连加密密钥都从运行中的进程拿走了 [^4]。平台自己要解密才能用，所以加密挡不住平台被打穿。Codecov 的 `env` 输出 [^6]、CircleCI 的客户机密 [^4]、Zeabur 的项目环境变量 [^2]，每次都是一大批客户一起中。
+
+做平台的我们，每次都是把这个洞补起来，然后等下一个入口出现。可是那批机密，一直都放在同一个地方。
+
+## Zero Trust 是什么？
+
+NIST SP 800-207 的意思很直白：你在内网、或用的是公司的机器，都不代表可以直接信任你。它列的原则里有一句："Network location alone does not imply trust."（光是网络位置，不代表可以信任）[^7]。每次访问都要重新验证、重新授权，而且只给刚好够用的权限 [^7]。设计的时候，一律假设网络已经被打穿了 [^7]。
+
+我想把这个原则再往下推一层：PaaS 的控制平面也会被打穿。既然会被打穿，平台手上就不要放拿了就能用的东西。它不保存能长期使用的凭证，做每件事都带着当下那位用户的身份。至于这件事能不能做，交给别人判断。这个「别人」在 NIST 的架构里叫 policy decision point 和 policy enforcement point [^7]，在我的架构里就是 kube-apiserver。
+
+## 平台不能信任，要怎么帮我操作？
+
+最直觉的做法，就是让平台用我的权限。这份权限是我自己或组管理员给的，给多少就是多少，平台拿着它也没办法越权。
+
+那要怎么让平台用我的权限？我翻了一下 Kubernetes 的文档，东西其实都是现成的。RBAC 管谁能对什么资源做什么事，权限只能加不能减，文档写得很干脆："Permissions are purely additive (there are no 'deny' rules)."（权限是纯叠加的，没有「拒绝」规则）[^8]，而且你给不出自己没有的权限 [^8]。OIDC 认证让 kube-apiserver 自己验 issuer 签的 JWT [^9]。Structured Authentication Configuration 在 v1.34 进了 stable，可以用 CEL 检查 token 的 claim（例如有效期不能超过多久），再把 claim 对应成 Kubernetes 的用户和组 [^10]。
+
+把这几块接起来，流程是这样：用户向 issuer 登录，拿到签过章的 token，再把 token 交给 kube-apiserver。apiserver 用 issuer 公开的密钥自己验章，把 claim 对应成 user 和 group，最后由 RBAC 决定放不放行。
+
+平台在这条路上只负责转交 token。要不要放行，改成由底下实际跑服务的 Kubernetes 决定。
+
+<figure>
+  <TrustStructure lang="zh-cn" />
+  <figcaption>传统 PaaS 和 Zero-Trust PaaS 的信任结构</figcaption>
+</figure>
+
+左边的平台手上有全部客户的机密和高权限凭证。右边的平台只转交用户的 token，放不放行由 kube-apiserver 照 RBAC 判断，Genkan 只发证，不在请求路径上。
+
+### Genkan 跟 RBAC 怎么接？
+
+Genkan 是我做的 OIDC issuer，登录以 passkey 为主。我刻意让它管得很少，只决定你是谁、在哪些组，RBAC 完全不碰。
+
+`genkanctl kube-config` 会产生 kube-apiserver 要用的 `AuthenticationConfiguration`，把 token 的 claim 对应成 Kubernetes 身份。`alice` 在 Kubernetes 里叫 `genkan:alice`，`dev` 组叫 `genkan:dev`。全部加上 `genkan:` 前缀，所以没有人能冒充 `system:` 开头的内置身份 [^11]。
+
+授权就交给集群管理员，照一般 RBAC 的方式做。我在文档里建议绑组，不要绑个人 [^11]：
+
+```sh
+kubectl create rolebinding dev-edit --clusterrole=edit --group=genkan:dev -n dev
+```
+
+Genkan 自己的 service account 权限我也收得很紧：不能建 Secret、不能建绑定或用户，也没有 `impersonate`。默认的管理员绑定是集群管理员安装时自己应用的，Genkan 改不了 [^11]。
+
+## 谁发卡？谁开门？
+
+这套东西用酒店房卡来想会比较好懂。
+
+柜台是 Genkan。它用 passkey 核对你的身份，然后印一张房卡，卡上只写「这是 Alice，属于 dev 团队」。门锁是 kube-apiserver，自己读卡、自己查名单（RBAC），看 dev 团队能进哪几间房。门锁手上早就有验卡用的公钥，不用每次打电话问柜台，所以 Genkan 不在任何一个请求的路径上 [^11]。
+
+平台是服务员。你把卡交给他帮你跑腿，他只开得了你那几间房，卡过几分钟就失效了。传统 PaaS 的服务员呢，腰上直接挂着整栋酒店的万能钥匙，帮每个房客开门。
+
+那要进备品室呢？Genkan 的一般 token 有效 10 分钟，默认只能看不能改。要改集群，得再按一次 passkey，换一张 5 分钟、不能续期的管理员卡，卡上的组是 `genkan:elevated:<group>` [^11]。有效期上限和「刚刚才登录」这两个条件也写在 kube-apiserver 的配置里，由 apiserver 自己检查。就算 Genkan 发错卡，门锁还是会挡下来 [^11]。
+
+<figure>
+  <HotelKeycard lang="zh-cn" />
+  <figcaption>房卡类比对应到 Genkan、平台、kube-apiserver</figcaption>
+</figure>
+
+柜台只在发卡时出场，之后每次开门都是门锁自己验卡、查名单。服务员手上只有你那张卡，别人的房间他开不了，备品室也得等你再按一次 passkey 才进得去。
+
+> 📚 access token 用的是 RFC 9068 的 JWT 格式，里面有 `client_id` claim，apiserver 靠它分辨 access token 和 ID token [^12]。
+
+顺带一提，Genkan 本身很小，就是一个约 20 MB 的 pod。它没有数据库，用户、凭证和 session 都存成 Kubernetes 的自定义资源 [^11]。
+
+## 平台要怎么变成 OAuth client？
+
+前面都是用户自己拿 token 跟 Kubernetes 讲话。可是平台有网页界面，得带用户走一趟 OIDC 登录，所以平台要当 Genkan 的 OAuth client [^13]。我做的 PaaS 叫 engawa，登录用 authorization code 加 PKCE，其他防护照 RFC 9700 的建议做齐 [^14], [^15]。第一步是在 Genkan 把它注册成 confidential client：
+
+```sh
+genkanctl client create engawa --type confidential --allow-elevation --audience kubernetes \
+  --redirect-uri https://engawa.example.com/auth/callback | kubectl apply -f -
+```
+
+登录流程大概长这样：
+
+<figure>
+  <LoginFlow lang="zh-cn" />
+  <figcaption>engawa 登录流程</figcaption>
+</figure>
+
+虚线是登录时才有的往返。登录之后只剩最下面那两条实线：engawa 每个请求都带着你的 token 直接问 kube-apiserver。
+
+图里没画到的有两件事。还没登录的访客，服务器什么都不存；engawa 自己也不验 ID token，「这个人是谁」交给 apiserver 用 `SelfSubjectReview` 回答。
+
+engawa 自己是没有权限的。它的 service account 没有任何 Role 或 ClusterRole，我在安装文档里附了一行命令让你自己确认：`kubectl auth can-i impersonate users --as=system:serviceaccount:engawa:engawa`，跑出来是 no。
+
+负责跟 apiserver 讲话的是 `engawa-kube` 这个 crate，我没有在里面提供任何「用 engawa 自己身份」的 client，想偷偷加个后门也没地方接。它也不做缓存，每次都拿当事人的 token 重新读，所以在测试里删掉一个 RoleBinding，下一个请求就是 403。Secret 列表只显示名称、类型和 key 数量，按下「显示」才会用你的权限去读值。
+
+engawa 也没有数据库。项目就是 namespace，卸载后，集群就回到安装前的样子。
+
+要改集群的时候，engawa 先拿一般 token 试着写，被 403 挡下来才跳出「以管理员重试」。这时再按一次 passkey，用 `openid elevate` scope 换一张 5 分钟、不能续期的管理员 token，就是前面那张管理员卡。
+
+![engawa 的管理员权限对话框：kube-apiserver 回 403 后，engawa 要求以管理员重试，并开启 Genkan 的 passkey 登录窗口](../../../assets/zero-trust-elevation-dialog.png)
+
+![换到管理员 token 之后，engawa 右上角显示管理员权限到期时间，终端标签页可以连进 Pod](../../../assets/zero-trust-admin-terminal.png)
+
+Genkan 现在是 alpha，engawa 还在 pre-alpha，两个都还没正式发布。Genkan 已公开在 GitHub [^11]，engawa 目前尚未开源；有兴趣的话可以先关注 [engawahq](https://github.com/engawahq) 😄
+
+[^1]: Zeabur, "A major security upgrade: Managing environment variables and server credentials more securely," Zeabur Changelog. [Online]. Available: https://zeabur.com/changelogs/security-update (accessed Oct. 16, 2026).
+
+[^2]: Zeabur, "Zeabur August 2026 security incident," Zeabur Blog, Sep. 2026. [Online]. Available: https://zeabur.com/blogs/august-2026-security-incident (accessed Oct. 16, 2026).
+
+[^3]: Vercel, "Vercel April 2026 security incident," Vercel Knowledge Base, Apr. 2026. [Online]. Available: https://vercel.com/kb/bulletin/vercel-april-2026-security-incident (accessed Oct. 16, 2026).
+
+[^4]: CircleCI, "CircleCI incident report for January 4, 2023 security incident," CircleCI Blog, Jan. 2023. [Online]. Available: https://circleci.com/blog/jan-4-2023-incident-report (accessed Oct. 16, 2026).
+
+[^5]: GitHub, "Security alert: Attack campaign involving stolen OAuth user tokens issued to two third-party integrators," GitHub Blog, Apr. 15, 2022. [Online]. Available: https://github.blog/2022-04-15-security-alert-stolen-oauth-user-tokens/ (accessed Oct. 16, 2026).
+
+[^6]: Codecov, "Codecov security update," Codecov, Apr. 2021. [Online]. Available: https://about.codecov.io/security-update/ (accessed Oct. 16, 2026).
+
+[^7]: S. Rose, O. Borchert, S. Mitchell, and S. Connelly, "Zero trust architecture," National Institute of Standards and Technology, Gaithersburg, MD, USA, NIST SP 800-207, Aug. 2020, doi: 10.6028/NIST.SP.800-207.
+
+[^8]: The Kubernetes Authors, "Using RBAC authorization," Kubernetes Documentation. [Online]. Available: https://kubernetes.io/docs/reference/access-authn-authz/rbac/
+
+[^9]: The Kubernetes Authors, "Authenticating," Kubernetes Documentation. [Online]. Available: https://kubernetes.io/docs/reference/access-authn-authz/authentication/
+
+[^10]: The Kubernetes Authors, "KEP-3331: Structured authentication config," kubernetes/enhancements. [Online]. Available: https://www.kubernetes.dev/resources/keps/3331/ (accessed Oct. 16, 2026).
+
+[^11]: engawahq, "Genkan," source repository (README, docs/architecture.md, docs/managing-users.md, crates/genkan-k8s). [Online]. Available: https://github.com/engawahq/genkan (accessed Oct. 16, 2026).
+
+[^12]: V. Bertocci, "JSON Web Token (JWT) profile for OAuth 2.0 access tokens," IETF, RFC 9068, Oct. 2021. [Online]. Available: https://www.rfc-editor.org/rfc/rfc9068
+
+[^13]: D. Hardt, Ed., "The OAuth 2.0 authorization framework," IETF, RFC 6749, Oct. 2012. [Online]. Available: https://www.rfc-editor.org/rfc/rfc6749
+
+[^14]: N. Sakimura, J. Bradley, and N. Agarwal, "Proof Key for Code Exchange by OAuth public clients," IETF, RFC 7636, Sep. 2015. [Online]. Available: https://www.rfc-editor.org/rfc/rfc7636
+
+[^15]: T. Lodderstedt, J. Bradley, A. Labunets, and D. Fett, "Best current practice for OAuth 2.0 security," IETF, RFC 9700, Jan. 2025. [Online]. Available: https://www.rfc-editor.org/rfc/rfc9700

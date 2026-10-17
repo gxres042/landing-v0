@@ -1,13 +1,15 @@
 ---
+import { languageTags, type Locale } from '../i18n';
 interface Props {
 	date: Date;
+	lang?: Locale;
 }
 
-const { date } = Astro.props;
+const { date, lang = 'zh' } = Astro.props;
 ---
 
 <time datetime={date.toISOString()}>
-	{date.toLocaleDateString('en-us', {
+	{date.toLocaleDateString(languageTags[lang], {
 		year: 'numeric',
 		month: 'short',
 		day: 'numeric',

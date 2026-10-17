@@ -1,0 +1,83 @@
+---
+title: '向 engawa 打声招呼'
+description: 'engawa 是怎么冒出来的：为什么不自己定义抽象层，而是直接从 Kubernetes 资源推断平台概念。'
+pubDate: 'Oct 17 2026'
+---
+
+import K8sMapping from '../../../components/figures/K8sMapping.tsx';
+
+我想要的平台，新手点两下就能把服务上线，出事的时候运维的人看得懂，而且哪天平台坏了、或我不想用了，服务还好好地运行着——听起来很贪心。engawa 就是我想试试看这三件事能不能同时成立的结果。
+
+## 平台自己定义抽象层，代价是什么？
+
+Zeabur、Dokploy 这类平台的做法很像：对外都是自己定义的一套项目、服务、变量、公开网络概念，而不是直接让你操作底层资源。以开源的 Dokploy 为例，这些概念存在它自己的 PostgreSQL 里，再由程序映射成 Docker Swarm service 和 Traefik 路由 [^1]。对新手很友好，但实际使用中很容易遇到各种影响「能否继续用这个平台」的问题：
+
+- <strong>平台没支持的东西装不了。</strong>我想装自己的 PostgreSQL Operator、运维自己的高可用 PostgreSQL，但平台没为 Operator 设计界面，就没办法从平台部署。绕过平台直接部署，平台上又看不到。
+- <strong>平台没设计的配置改不了。</strong>sidecar container、自定义健康检查这些，平台没有对应的机制就配置不了。更糟的是，在平台上改了其他配置，这些自定义内容可能被覆盖。
+- <strong>离不开平台。</strong>映射逻辑在平台里，我没办法轻松把 Dokploy 部署的东西迁到 Coolify，也无法保证删掉 Dokploy 之后（或 Dokploy 坏掉时）一切都还能如常运维。
+
+现在又多了 agent。Kubernetes 和 docker-compose 是公开又广泛使用的标准，agent 见过大量相关内容，让它协助运维集群是可行的，只是实测表现会因模型而异 [^2]。但各平台专有的概念，例如某个平台的 service specification 长什么样子，不在公开的训练数据里。Li 等人 [^3] 指出，模型在私有库的 API 上表现会明显下降，只给文档能帮它找到该用哪个 API，却不够教它用对。所以写出来的效果就差一截。
+
+## 那直接用 Kubernetes 不就好了？
+
+可以，但有两种人会却步。
+
+第一种是不懂 Kubernetes 的非 DevOps 人员，比如 vibe coder。他们只想用「上线服务」、「绑定域名」这种直觉的概念做事。Zeabur、Dokploy 很擅长把这些操作简化，直接碰 Kubernetes 和 Aptakube 这类工具就复杂很多。
+
+第二种是 DevOps 自己。他们也想要简单的运维方式：出事时一眼看出问题在哪，轻松改配置、操作服务，复杂的部分再交给 agent 或人处理。可是现在的平台，只能在「复杂到不好维护」和「简单到用不了」之间二选一。
+
+## 如果完全不自己定义抽象层
+
+所以我开始想：不自己定义抽象层，直接从 Kubernetes 资源推断「项目、服务、变量、公开网络」的关系，是不是就能同时拿到两种平台的好处？
+
+前阵子我做了一个研究：给定一组 Kubernetes 资源，从它们之间的引用关系推出对应的高层概念。Namespace 对应 Railway 的项目，Deployment 或 StatefulSet 对应服务，PVC 对应磁盘，Service 或 HTTPRoute 对应网络访问，以此类推。这个 PoC 的效果其实不错。
+
+<figure>
+  <K8sMapping lang="zh-cn" />
+  <figcaption>Kubernetes 资源对应到平台概念</figcaption>
+</figure>
+
+左边是集群里本来就有的资源，右边是平台界面上的概念，中间只有「推断」，没有另外一份要同步的数据。
+
+如果这条路走得通，前面那四件事会一起消失，因为平台没有自己的数据库，所有状态都在集群里。你自己装的 Operator、自己加的 sidecar，平台看得到、不会覆盖；agent 学过的 Kubernetes 知识直接有用；平台不见了，资源还在，你照样用 kubectl 接手。
+
+不过要让这件事成立，还有两个问题要解决。
+
+## 问题一：不自己定义，需求要怎么满足？
+
+拿 autoscaling 当例子。HPA 是 Kubernetes 内置的机制，最常见的用法是看 CPU 和内存，而且长期以来都不能缩到 0。直到 v1.37 才有变化 [^4]。在那之前，很多平台干脆自己写一套 autoscaling。
+
+engawa 让「服务」直接对应最普通的 Deployment，所以我想用 cloud native 的方式解决，例如引入 KEDA。KEDA 是一个 Kubernetes 为基础的事件驱动自动扩缩器 [^5]，页面上也写它是 CNCF graduated 项目 [^5]。
+
+这就是 [recommendations](https://github.com/engawahq/recommendations) 这个 repo 的想法：研究并挑选成熟的开源组件，用业界标准的概念满足用户需求，是一个「经过测试的 Kubernetes 组件目录」[^6]。每个 capability 都记录 upstream chart、版本、values 和选它的理由，CI 会在 kind 上实际装过一次并测量 [^6]。它只是数据，不是安装器。Autoscaling 这一格后面放的就是 KEDA：单节点可选，多节点建议装 [^6]。
+
+engawa 再从这份目录出发，检测集群缺哪些能力、建议该装什么。如果某个需求真的没有现成的成熟组件，非得自己做不可，我就把它做成独立的开源组件，让其他集群也能用，而不是塞进 engawa 当成它的私有功能。
+
+## 问题二：平台本身怎么不变成最大的破口？
+
+平台自己的信息安全漏洞或 trade-off，很容易造成无法挽回的损失。engawa 是从零开始的平台，所以我想验证：用 Kubernetes 最原生、最标准的机制，例如 OIDC 认证，能不能让平台本身不成为控制整个集群的权限破口？权限管理再交给 RBAC，跟 Kubernetes 原本的做法贴在一起。
+
+这个想法的第一个成果是 [Genkan](https://github.com/engawahq/genkan)。Genkan 自己不持有 cluster-admin，从第一天起就以最小权限运行 [^7]。kube-apiserver 信任 Genkan 在用户认证后签发的 JWT，用户再拿这个 token 去认证。平台最后就是把用户的 token 转交出去，自己手上没有权限。这部分我另外写了一篇，叫 [打造 Zero-Trust PaaS](/zh-cn/blog/make-a-zero-trust-paas/)。
+
+顺带一提，Genkan 一开始只是要当 engawa 多租户模式的认证服务器。写着写着发现它其实适用于任何集群，就把它做成通用的 OIDC issuer 了。
+
+## 我给自己的几个原则
+
+- 目标是让平台本身免费、完全开源，程序本身不靠来获利；engawa 目前尚未开源。
+- 不自己定义抽象层，用既有的成熟 Operator 或组件达成目标。非得自己做，就做成开源组件。
+
+现在 Genkan 是 alpha，engawa 还在 pre-alpha，两个都还没正式发布 [^7]。最缺的是曝光度，还有 UI/UX：Genkan 的界面现在真的很难看，engawa 进入 alpha 之后也还需要人一起写 UI。还有 cloud native 的高手，会写 Rust 或会 vibe coding 的人，有兴趣的话欢迎一起共建 engawa！
+
+[^1]: Dokploy, "dokploy," source repository. [Online]. Available: https://github.com/Dokploy/dokploy (accessed Oct. 17, 2026).
+
+[^2]: Y. Xu *et al.*, "CloudEval-YAML: A practical benchmark for cloud configuration generation," arXiv:2401.06786, 2024. [Online]. Available: https://arxiv.org/abs/2401.06786 (accessed Oct. 17, 2026).
+
+[^3]: M. Li, T. Chen, G. Yang, and J. Li, "Learning from execution: Self-evolving memory for private-library code generation," arXiv:2604.24222, 2026. [Online]. Available: https://arxiv.org/abs/2604.24222 (accessed Oct. 17, 2026).
+
+[^4]: The Kubernetes Authors, "Kubernetes v1.37: Scale workloads to zero with HorizontalPodAutoscaler," Kubernetes Blog, Sep. 2, 2026. [Online]. Available: https://kubernetes.io/blog/2026/09/02/kubernetes-v1-37-hpa-scale-to-zero-beta/ (accessed Oct. 17, 2026).
+
+[^5]: KEDA Authors, "KEDA." [Online]. Available: https://keda.sh/ (accessed Oct. 17, 2026).
+
+[^6]: engawahq, "recommendations," source repository. [Online]. Available: https://github.com/engawahq/recommendations (accessed Oct. 17, 2026).
+
+[^7]: engawahq, "Genkan," source repository. [Online]. Available: https://github.com/engawahq/genkan (accessed Oct. 17, 2026).

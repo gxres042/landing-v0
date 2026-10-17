@@ -2,9 +2,8 @@
   "name": "web",
   "type": "module",
   "version": "0.0.1",
-  "engines": {
-    "node": ">=22.22.0"
-  },
+  "license": "Apache-2.0",
+  "packageManager": "bun@1.4.3",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -12,10 +11,21 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/markdown-satteri": "0.4.4",
     "@astrojs/mdx": "^8.1.0",
+    "@astrojs/react": "^7.1.0",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
+    "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.4.0",
-    "sharp": "^0.35.0"
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "sharp": "^0.35.0",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@phosphor-icons/core": "2.1.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0"
   }
 }

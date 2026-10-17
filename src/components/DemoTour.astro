@@ -1,0 +1,146 @@
+---
+import landing from '../data/landing.json';
+import '../styles/demo-tour.css';
+import Icon from './Icon.astro';
+
+interface Props { lang?: 'zh' | 'en' | 'zh-cn' }
+const { lang = 'zh' } = Astro.props;
+const { tour, chat, ui, secrets } = landing[lang];
+const copy = { tour, chat, ui, secrets };
+const services = ['web', 'api', 'db', 'worker'];
+const secretNames = ['db-credentials', 'api-key', 'shop-example-com-tls'];
+---
+
+<section id="tour" class="dt bg-ink text-white" aria-labelledby="tour-heading">
+  <engawa-demo data-copy={JSON.stringify(copy)}>
+    <div class="wrap py-20 md:py-24">
+      <div class="eyebrow text-lime"><span>02</span> {tour.eyebrow}</div>
+      <h2 id="tour-heading" class="heading-lg mt-5 max-w-3xl text-lime">{tour.title}</h2>
+      <ol class="dt-steps">
+        {tour.ch.map((title, i) => (
+          <li><button type="button" data-action="chapter" data-index={i} aria-current={i === 0 ? 'step' : 'false'} aria-label={tour.stepAria.replace('{n}', String(i + 1)) + title}>
+            <span class="dt-track"><span data-progress></span></span>
+            <span class="font-mono text-xs opacity-60">0{i + 1}</span>
+            <span data-chapter-title>{title}</span>
+          </button></li>
+        ))}
+      </ol>
+      <div class="dt-caption-row">
+        <div class="dt-caption">
+          <p data-reduced class="dt-note" hidden>{tour.reduced}</p>
+          <h3><span data-caption-number class="font-mono text-sm text-lime">01</span> <span data-caption-title>{tour.ch[0]}</span></h3>
+          <p data-caption-body>{tour.caps[0].body}</p>
+          <p data-caption-extra class="dt-note">{tour.caps[0].extra}</p>
+        </div>
+        <div class="dt-controls">
+          <div class="dt-mode" role="group" aria-label={tour.modeLabel}>
+            <button type="button" data-action="agent" aria-pressed="true">{tour.modeAgent}</button>
+            <button type="button" data-action="terminal" aria-pressed="false">{tour.modeKubectl}</button>
+          </div>
+          <div data-playback class="flex flex-wrap gap-2">
+            <button type="button" data-action="play" class="dt-control"><span data-pause-icon><Icon name="pause" /></span><span data-resume-icon hidden><Icon name="play" /></span><span data-play-label>{tour.pause}</span></button>
+            <button type="button" data-action="replay" class="dt-control"><Icon name="replay" /> {tour.replay}</button>
+          </div>
+        </div>
+      </div>
+      <p class="dt-disclaimer">{tour.disclaimer}</p>
+      <div class="dt-stage" role="group" aria-label={tour.stage}>
+        <div class="min-w-0">
+          <div class="dt-pane-heading"><span data-left-label>{tour.leftAgent}</span><span class="dt-mock">{tour.mock}</span></div>
+          <div data-chat class="dt-chat">
+            <div class="dt-chat-bar"><Icon name="chat" /> <b>{chat.title}</b></div>
+            <div data-messages class="dt-messages"><p class="dt-chat-empty">{chat.empty}</p></div>
+            <div class="dt-chat-input" aria-hidden="true">{chat.placeholder}<Icon name="arrow-right" /></div>
+          </div>
+          <div data-terminal class="dt-terminal" hidden>
+            <div class="dt-terminal-bar"><span>~/my-shop</span><span>kubectl</span></div>
+            <pre data-terminal-lines translate="no"></pre>
+          </div>
+        </div>
+        <div class="min-w-0">
+          <div class="dt-pane-heading"><span>{ui.paneLabel}</span><span class="dt-mock">{tour.mock}</span></div>
+          <div class="dt-right">
+            <div data-app class="dt-app">
+              <nav data-sidebar class="dt-sidebar" aria-label={ui.sideLabel}>
+                <div class="dt-side-logo"><img src="/brand/mark.svg" alt="engawa" width="24" height="24" /><span class="dt-side-label">engawa</span></div>
+                <button type="button" data-action="projects" aria-label={ui.projects} aria-pressed="true"><Icon name="folder" /><span class="dt-side-label">{ui.projects}</span></button>
+                <button type="button" data-action="suggestions" aria-label={ui.suggestions} aria-pressed="false"><Icon name="list-checks" /><span class="dt-side-label">{ui.suggestions}</span><span data-badge class="dt-badge" hidden>3</span></button>
+                <div class="dt-side-static" title={ui.capabilities}><Icon name="cube" /><span class="dt-side-label">{ui.capabilities}</span></div>
+                <button type="button" data-action="sidebar" class="dt-side-toggle" aria-expanded="false" aria-label={ui.expand}><span data-collapse-icon hidden><Icon name="caret-left" /></span><span data-expand-icon><Icon name="caret-right" /></span></button>
+              </nav>
+              <aside data-project-column class="dt-project-column" hidden>
+                <b translate="no">my-shop</b>
+                <ul>{services.map((name, i) => <li data-project-service={i} hidden><span class="dt-dot"></span><span translate="no">{name}</span></li>)}</ul>
+              </aside>
+              <div class="dt-app-main">
+                <div data-empty class="dt-empty dt-hatch"><span>{ui.empty}</span></div>
+                <div data-overview hidden>
+                  <div class="dt-app-heading"><div><span class="dt-crumb">{ui.projects} / </span><b class="dt-project-name" translate="no">my-shop</b></div><button type="button" data-action="advanced" class="dt-small-button" aria-pressed="false">{ui.adv}</button></div>
+                  <div class="dt-tabs" aria-hidden="true"><span class="dt-selected">{ui.tab1}</span><span>{ui.tab2}</span><span>{ui.tab3}</span></div>
+                  <div class="dt-app-columns">
+                    <div class="dt-main-column">
+                      <section class="dt-panel"><header><b>{ui.services}</b><span data-service-count>0</span></header>
+                        {services.map((name, i) => <div data-service={i} class="dt-service" hidden>
+                          <div class="dt-service-name"><b translate="no">{name}</b><small data-kind class="dt-kind" hidden></small></div>
+                          <span data-status class="dt-status"><span class="dt-dot"></span><span data-status-word>{ui.starting}</span></span>
+                          <ul data-pods class="dt-pods" aria-label={ui.pods}>{Array.from({ length: i < 2 ? 2 : 1 }, () => <li></li>)}</ul>
+                        </div>)}
+                      </section>
+                      <section data-backing class="dt-panel" hidden><header><b>{ui.backing}</b><span class="font-mono">web</span></header>
+                        {['Deployment', 'Service', 'HTTPRoute', 'PersistentVolumeClaim'].map((kind, i) => <div class="dt-kv font-mono"><span>{kind}</span><span>{i === 3 ? 'uploads' : 'web'}</span></div>)}
+                      </section>
+                    </div>
+                    <div class="dt-detail-column">
+                      <section class="dt-panel"><header><b>{ui.urls}</b></header><div data-no-url class="dt-kv dt-muted">{ui.noUrl}</div>
+                        {['shop.example.com', 'api.shop.example.com'].map((host, i) => <div data-url={i} class="dt-kv font-mono" hidden><span>{host}</span><span class="inline-flex items-center gap-1"><Icon name="arrow-right" /> {services[i]}</span></div>)}
+                        <div data-advanced-url class="dt-kv dt-muted font-mono" hidden>HTTPRoute</div>
+                      </section>
+                      <section class="dt-panel"><header><b>{ui.storage}</b></header><div data-no-storage class="dt-kv dt-muted">—</div>
+                        {[ui.uploads, ui.dbData].map((label, i) => <div data-storage={i} class="dt-kv" hidden><span>{label}</span><span class="dt-status dt-ok">{ui.inUse}</span></div>)}
+                        <div data-advanced-storage class="dt-kv dt-muted font-mono" hidden>PersistentVolumeClaim</div>
+                      </section>
+                      <section class="dt-panel"><header><b>{ui.backup}</b></header><div data-no-backup class="dt-kv dt-muted">—</div><div data-backup class="dt-kv" hidden><span class="font-mono">db</span><span data-backup-status class="dt-status dt-warn">{ui.noBackup}</span></div><div data-backup-example class="dt-kv dt-muted" hidden>{ui.example}</div></section>
+                    </div>
+                  </div>
+                </div>
+                <div data-suggestions hidden>
+                  <div class="dt-app-heading"><b class="dt-project-name">{ui.sugTitle}</b><span data-open-count class="dt-status dt-warn">3</span></div>
+                  <p class="dt-muted my-2 text-xs">{ui.sugSub}</p>
+                  <div class="dt-panel">
+                    {ui.gaps.map((gap, i) => <section data-gap={i} class="dt-gap">
+                      <div class="dt-gap-line"><span data-gap-status class:list={['dt-status', i === 0 ? 'dt-fail' : 'dt-warn']}>{ui.sev[gap.s as 'high' | 'medium']}</span><span class="dt-gap-text">{gap.text}</span><button type="button" data-action="review" data-index={i} class="dt-small-button">{ui.review}</button><button type="button" data-action="undo" data-index={i} class="dt-small-button" hidden>{ui.undo}</button></div>
+                      <div data-review class="dt-review" hidden>
+                        <header><b>{gap.title}</b><span>{ui.exampleCfg}</span></header>
+                        <pre data-diff translate="no"></pre>
+                        <p class="dt-affected">{ui.affected}<span class="font-mono">{gap.affected}</span></p>
+                        <footer><button type="button" data-action="cancel" data-index={i} class="dt-small-button">{ui.cancel}</button><button type="button" data-action="apply" data-index={i} class="dt-small-button dt-primary">{ui.apply}</button></footer>
+                      </div>
+                      <p data-receipt class="dt-receipt" role="status" hidden>{ui.receipt}</p>
+                    </section>)}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div data-gone class="dt-gone" hidden><div class="dt-gone-card"><h4>{ui.goneTitle}</h4><div data-gone-check hidden><p>{ui.goneBody}</p><ul>{services.map((name) => <li><span class="font-mono">{name}</span><span class="dt-status dt-ok">{ui.running}</span></li>)}</ul><p class="font-mono mt-3 flex items-center gap-1 text-xs">shop.example.com <Icon name="arrow-right" /> HTTP/2 200</p></div></div></div>
+            <div data-secrets class="dt-secrets" hidden>
+              <h4>{secrets.title}</h4>
+              <div class="dt-secret-diagram">
+                <div class="dt-secret-outside dt-hatch"><b>engawa</b><span>{secrets.noPath}</span></div>
+                <div class="dt-secret-arrow"><span data-secret-try hidden>{secrets.tryWord}</span><span data-secret-line class="dt-secret-line" hidden></span><span data-secret-stop class="dt-secret-stop" hidden><Icon name="prohibit" /> {secrets.blocked}</span></div>
+                <div class="dt-secret-server"><b class="inline-flex items-center gap-2"><Icon name="hard-drives" /> {secrets.cluster}</b><ul>{secrets.items.map((label, i) => <li><span>{label}</span><span class="dt-secret-mask dt-hatch" role="img" aria-label={secrets.hidden}></span><small translate="no">{secretNames[i]}</small></li>)}</ul></div>
+                <div class="dt-secret-arrow"><span data-secret-try hidden>{secrets.tryWord}</span><span data-secret-line class="dt-secret-line" hidden></span><span data-secret-stop class="dt-secret-stop" hidden><Icon name="prohibit" /> {secrets.blocked}</span></div>
+                <div class="dt-secret-outside dt-hatch"><b>{secrets.provider}</b><span>{secrets.noPath}</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <noscript><p class="mt-6">{tour.noscript}</p></noscript>
+    </div>
+    <template data-template="message"><div class="dt-message"><p></p><div class="dt-message-code" hidden><div>{chat.codeLabel}</div><pre translate="no"></pre></div></div></template>
+    <template data-template="typing"><div class="dt-message dt-agent dt-typing"><span><Icon name="dots-three" /></span><span class="sr-only">{chat.typing}</span></div></template>
+  </engawa-demo>
+</section>
+<script>
+  import '../scripts/demo-tour';
+</script>

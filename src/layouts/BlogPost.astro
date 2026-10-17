@@ -5,80 +5,165 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
+import Icon from '../components/Icon.astro';
+import { blogCopy, languageTags, localizePath, type Locale } from '../i18n';
 
-type Props = CollectionEntry<'blog'>['data'];
+type Props = CollectionEntry<'blog'>['data'] & { lang: Locale };
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, lang } = Astro.props;
+const t = blogCopy[lang];
 ---
 
-<html lang="en">
+<!doctype html>
+<html lang={languageTags[lang]}>
 	<head>
-		<BaseHead title={title} description={description} />
-		<style>
-			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
-			}
-			.hero-image {
-				width: 100%;
-			}
-			.hero-image img {
-				display: block;
-				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
-			}
-			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 1em;
-				color: rgb(var(--gray-dark));
-			}
-			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
-				text-align: center;
-				line-height: 1;
-			}
-			.title h1 {
-				margin: 0 0 0.5em 0;
-			}
-			.date {
-				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
-			}
-			.last-updated-on {
-				font-style: italic;
-			}
-		</style>
+		<BaseHead title={title} description={description} image={heroImage} lang={lang} type="article" />
 	</head>
-
 	<body>
-		<Header />
-		<main>
+		<Header lang={lang} />
+		<main id="main" class="wrap pb-24 pt-12 sm:pb-32 sm:pt-20">
 			<article>
-				<div class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
-				</div>
-				<div class="prose">
-					<div class="title">
-						<div class="date">
-							<FormattedDate date={pubDate} />
-							{updatedDate && (
-								<div class="last-updated-on">
-									Last updated on <FormattedDate date={updatedDate} />
-								</div>
-							)}
-						</div>
-						<h1>{title}</h1>
-						<hr />
+				<header class="mx-auto max-w-3xl">
+					<a class="inline-flex items-center gap-3 font-mono text-xs text-muted underline-offset-4 hover:text-ink hover:underline" href={localizePath('/blog/', lang)}>
+						<Icon name="arrow-left" /> {t.back}
+					</a>
+					<p class="eyebrow mb-6 mt-12">{t.journal}</p>
+					<h1 class="heading-xl text-ink">{title}</h1>
+					<p class="lede mt-6">{description}</p>
+					<div class="mt-8 flex flex-wrap gap-x-6 gap-y-2 border-b border-line pb-8 font-mono text-xs leading-relaxed text-muted">
+						<p>{t.published} <FormattedDate date={pubDate} lang={lang} /></p>
+						{updatedDate && <p>{t.updated} <FormattedDate date={updatedDate} lang={lang} /></p>}
 					</div>
+				</header>
+				{heroImage && (
+					<div class="mx-auto mt-10 max-w-5xl overflow-hidden rounded-2xl border border-line bg-surface sm:mt-14">
+						<Image src={heroImage} width={1440} widths={[640, 960, 1440]} sizes="(max-width: 1072px) calc(100vw - 48px), 1024px" alt="" class="block h-auto w-full" />
+					</div>
+				)}
+				<div class="article-prose mx-auto mt-12 max-w-3xl sm:mt-16">
 					<slot />
 				</div>
+				<nav aria-label={t.navigation} class="mx-auto mt-16 flex max-w-3xl flex-wrap items-center justify-between gap-6 border-t border-line pt-8">
+					<a href={localizePath('/blog/', lang)} class="button button-outline"><Icon name="arrow-left" /> {t.all}</a>
+					<a href={localizePath('/rss.xml', lang)} class="inline-flex items-center gap-2 font-mono text-xs text-muted underline underline-offset-4 hover:text-ink"><Icon name="rss" /> {t.rss} <Icon name="arrow-up-right" /></a>
+				</nav>
 			</article>
 		</main>
-		<Footer />
+		<Footer lang={lang} />
 	</body>
 </html>
+
+<style>
+	.article-prose {
+		color: var(--color-body, #525252);
+		font-size: 1.0625rem;
+		line-height: 1.85;
+		overflow-wrap: anywhere;
+	}
+	.article-prose :global(p),
+	.article-prose :global(ul),
+	.article-prose :global(ol),
+	.article-prose :global(dl),
+	.article-prose :global(figure) {
+		margin-block: 1.5em;
+	}
+	.article-prose :global(h1),
+	.article-prose :global(h2),
+	.article-prose :global(h3),
+	.article-prose :global(h4),
+	.article-prose :global(h5),
+	.article-prose :global(h6) {
+		margin-block: 2em 0.75em;
+		color: var(--color-ink, #253326);
+		font-weight: 550;
+		line-height: 1.25;
+		letter-spacing: -0.025em;
+		scroll-margin-top: 6rem;
+	}
+	.article-prose :global(h1) { font-size: 2.25em; }
+	.article-prose :global(h2) { font-size: 1.75em; }
+	.article-prose :global(h3) { font-size: 1.35em; }
+	.article-prose :global(h4) { font-size: 1.15em; }
+	.article-prose :global(a) {
+		color: var(--color-ink, #253326);
+		text-decoration: underline;
+		text-decoration-color: #a6bd73;
+		text-underline-offset: 0.2em;
+	}
+	.article-prose :global(a:hover) { text-decoration-color: currentColor; }
+	.article-prose :global(strong) { color: var(--color-ink, #253326); font-weight: 650; }
+	.article-prose :global(ul) { list-style: disc; padding-left: 1.5em; }
+	.article-prose :global(ol) { list-style: decimal; padding-left: 1.5em; }
+	.article-prose :global(li) { margin-block: 0.4em; }
+	.article-prose :global(li > ul),
+	.article-prose :global(li > ol) { margin-block: 0.5em; }
+	.article-prose :global(blockquote) {
+		margin-block: 2em;
+		border-left: 3px solid var(--color-lime, #d7f593);
+		padding-left: 1.5em;
+		color: var(--color-ink, #253326);
+	}
+	.article-prose :global(code) { font-family: var(--font-mono); font-size: 0.85em; }
+	.article-prose :global(:not(pre) > code) {
+		border-radius: 0.25rem;
+		background: var(--color-surface, #fafaf9);
+		padding: 0.15em 0.35em;
+	}
+	.article-prose :global(pre) {
+		margin-block: 2em;
+		max-width: 100%;
+		overflow-x: auto;
+		border: 1px solid var(--color-line, #e5e5e5);
+		border-radius: 0.75rem;
+		padding: 1.25rem;
+		line-height: 1.7;
+		overflow-wrap: normal;
+	}
+	.article-prose :global(img),
+	.article-prose :global(video) { max-width: 100%; height: auto; border-radius: 0.75rem; }
+	.article-prose :global(figcaption) {
+		margin-top: 0.75rem;
+		color: var(--color-muted);
+		font-size: 0.8125rem;
+		line-height: 1.6;
+		text-align: center;
+	}
+	.article-prose :global(table) {
+		display: table;
+		width: 100%;
+		min-width: 51em;
+		margin-block: 2em;
+		border-collapse: collapse;
+		overflow-wrap: normal;
+		line-height: 1.65;
+		font-size: 0.9em;
+	}
+	.article-prose :global(.article-table-scroll) {
+		max-width: 100%;
+		overflow-x: auto;
+		margin-block: 2em;
+		border: 1px solid var(--color-line);
+		border-radius: 0.75rem;
+	}
+	.article-prose :global(.article-table-scroll:focus-visible) { outline: 2px solid var(--color-ink); outline-offset: 4px; }
+	.article-prose :global(.article-table-scroll table) { margin: 0; }
+	.article-prose :global(th),
+	.article-prose :global(td) { border-bottom: 1px solid var(--color-line, #e5e5e5); padding: 0.75em 1em; text-align: left; vertical-align: top; }
+	.article-prose :global(th:first-child),
+	.article-prose :global(td:first-child) { min-width: 7em; white-space: nowrap; }
+	.article-prose :global(th:nth-child(2)),
+	.article-prose :global(td:nth-child(2)) { min-width: 9em; }
+	.article-prose :global(th:nth-child(3)),
+	.article-prose :global(td:nth-child(3)) { min-width: 20em; }
+	.article-prose :global(th:nth-child(4)),
+	.article-prose :global(td:nth-child(4)) { min-width: 15em; }
+	.article-prose :global(th) { color: var(--color-ink, #253326); font-weight: 600; }
+	.article-prose :global(hr) { margin-block: 3em; border: 0; border-top: 1px solid var(--color-line, #e5e5e5); }
+	.article-prose :global(mark) { background: var(--color-lime, #d7f593); color: var(--color-ink, #253326); }
+	.article-prose :global(.footnotes) { margin-top: 3rem; border-top: 1px solid var(--color-line); font-size: 0.85em; }
+	.article-prose :global(.footnotes-title) { font-size: 1.25em; }
+	.article-prose :global([data-footnote-ref]) { font-weight: 600; padding-inline: 0.1em; }
+	.article-prose :global([data-footnote-backref]) { margin-inline-start: 0.35em; }
+	.article-prose :global(.footnotes li) { scroll-margin-top: 7rem; }
+	.article-prose :global(> :first-child) { margin-top: 0; }
+</style>

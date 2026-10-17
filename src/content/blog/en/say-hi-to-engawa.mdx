@@ -1,0 +1,83 @@
+---
+title: 'Say Hi to engawa!'
+description: 'Where engawa came from: inferring platform concepts directly from Kubernetes resources instead of defining another abstraction layer.'
+pubDate: 'Oct 17 2026'
+---
+
+import K8sMapping from '../../../components/figures/K8sMapping.tsx';
+
+I want a platform that lets a beginner deploy a service in a couple of clicks, helps an operator see what's wrong when something breaks, and keeps services running even if the platform goes down—or I decide to stop using it. Maybe that's asking a lot. engawa is my attempt to find out whether I can have all three.
+
+## The hidden cost of a platform's abstractions
+
+Zeabur and Dokploy take a similar approach: instead of exposing the underlying resources, they give you their own model of projects, services, variables, and public networking. Dokploy, which is open source, stores that model in its own PostgreSQL database and maps it to Docker Swarm services and Traefik routes [^1]. It's an approachable starting point, but sooner or later you run into limitations that can make you question whether to stay:
+
+- <strong>If the platform doesn't support it, you can't deploy it.</strong> Say I want to install a PostgreSQL Operator and manage my own highly available PostgreSQL setup. Without an interface for Operators, I can't deploy it through the platform. I can go around the platform, but then it can't see what I've deployed.
+- <strong>If the platform didn't anticipate a setting, you can't change it.</strong> Want a sidecar container or a custom health check? You need the platform to expose that option. Even if you add it yourself, changing an unrelated setting through the platform may overwrite your work.
+- <strong>Leaving is hard.</strong> The platform owns the mapping logic. I can't easily move workloads from Dokploy to Coolify, and I can't be sure I'll still be able to operate everything after removing Dokploy—or if it breaks.
+
+AI agents add another wrinkle. Kubernetes and docker-compose are open, widely used standards, with plenty of material for agents to learn from. Having an agent help operate a cluster is feasible, though benchmark results vary by model [^2]. A platform's proprietary concepts—what its service specification looks like, for example—aren't in that public training data. Li et al. [^3] found a substantial drop in model performance on private-library APIs. Documentation helped models identify the right API, but wasn't enough to teach them to use it correctly. That gap shows up in the code they produce.
+
+## Why not just use Kubernetes directly?
+
+You can. But that leaves two groups of people underserved.
+
+First, there are people who don't know Kubernetes and aren't DevOps engineers—vibe coders, for example. They want to “deploy a service” or “connect a domain,” not learn the machinery underneath. Zeabur and Dokploy make those tasks straightforward. Working directly with Kubernetes, even through a tool like Aptakube, is a lot more involved.
+
+Then there are DevOps engineers. They want a simpler way to operate things, too: see what's wrong at a glance, change a setting, manage a service, and hand the complicated work to an agent or another person. With today's platforms, it feels like the choice is between too much complexity and too little flexibility.
+
+## What if the platform didn't own the abstraction?
+
+That got me thinking: could I infer projects, services, variables, and public networking directly from Kubernetes resources instead of defining a separate model? Would that give me the best of both approaches?
+
+I recently built a proof of concept to try it. Given a set of Kubernetes resources, it follows the references between them to infer higher-level concepts: a Namespace becomes a Railway-style project, a Deployment or StatefulSet becomes a service, a PVC becomes a volume, and a Service or HTTPRoute represents network access. It worked surprisingly well.
+
+<figure>
+  <K8sMapping lang="en" />
+  <figcaption>Kubernetes resources mapped to platform concepts</figcaption>
+</figure>
+
+On the left are resources that already exist in the cluster. On the right are the concepts the platform shows you. The only step in between is inference. There's no second copy of the data to keep in sync.
+
+If this approach holds up, it addresses all four problems at once. The platform has no database of its own; all state lives in the cluster. It can see the Operators and sidecars you add without overwriting them. An agent can use the Kubernetes knowledge it already has. And if the platform disappears, your resources are still there—you can take over with kubectl.
+
+That still leaves two questions.
+
+## How do we add features without inventing our own model?
+
+Take autoscaling. HPA is built into Kubernetes, most commonly using CPU and memory metrics, and for a long time it could not scale to zero. That only changed in v1.37 [^4]. Before then, many platforms simply implemented autoscaling themselves.
+
+In engawa, a “service” maps directly to an ordinary Deployment, so I want to solve this the cloud-native way—for example, by introducing KEDA. KEDA is a Kubernetes-based event-driven autoscaler [^5], and its website identifies it as a CNCF graduated project [^5].
+
+That's the idea behind [recommendations](https://github.com/engawahq/recommendations): a “tested catalog of Kubernetes components” [^6]. I research and select mature open-source components that meet users' needs using industry-standard concepts. Each capability entry lists the upstream chart, version, values, and the rationale for choosing it. CI installs the component on kind and measures it [^6]. The repository is a catalog, not an installer. For autoscaling, the choice is KEDA: optional on a single-node cluster, recommended on a multi-node cluster [^6].
+
+engawa uses that catalog to identify missing capabilities and suggest what to install. If there's no mature component for a requirement and I really do need to build something, I'll make it a standalone open-source component that other clusters can use—not a feature locked inside engawa.
+
+## How do we keep the platform from becoming the biggest security risk?
+
+A security flaw—or even a security trade-off—in the platform can cause damage you can't undo. Starting engawa from scratch gives me a chance to ask: can standard, native Kubernetes mechanisms such as OIDC authentication keep the platform from becoming a privileged back door into the entire cluster? Authorization would stay with RBAC, following Kubernetes' existing model.
+
+The first result is [Genkan](https://github.com/engawahq/genkan). Genkan does not hold cluster-admin privileges and has operated with least privilege from day one [^7]. kube-apiserver trusts the JWTs Genkan issues after authenticating a user, and the user authenticates with that token. Ultimately, the platform just forwards the user’s token and has no privileges of its own. I wrote about this separately in [Make a Zero-Trust PaaS](/en/blog/make-a-zero-trust-paas/).
+
+Incidentally, Genkan started as an authentication server for engawa’s multi-tenant mode. As I wrote it, I realized it would work for any cluster, so I turned it into a general-purpose OIDC issuer.
+
+## The principles I'm working toward
+
+- Keep the platform free and make it fully open source. engawa isn't open source yet, but that's the goal. I don't plan to make money by charging for the software itself.
+- Don't invent a separate abstraction layer. Use mature Operators and components where they exist. If I have to build a component, make it open source.
+
+Genkan is in alpha and engawa is still pre-alpha; neither has an official release yet [^7]. engawa hasn't been open-sourced yet. Right now, the biggest needs are getting the word out and improving the UI/UX. Genkan's interface is honestly pretty rough, and once engawa reaches alpha, I'll need help building its UI too. If you know cloud-native infrastructure, write Rust, or enjoy vibe coding, I'd love to have you help build engawa.
+
+[^1]: Dokploy, "dokploy," source repository. [Online]. Available: https://github.com/Dokploy/dokploy (accessed Oct. 17, 2026).
+
+[^2]: Y. Xu *et al.*, "CloudEval-YAML: A practical benchmark for cloud configuration generation," arXiv:2401.06786, 2024. [Online]. Available: https://arxiv.org/abs/2401.06786 (accessed Oct. 17, 2026).
+
+[^3]: M. Li, T. Chen, G. Yang, and J. Li, "Learning from execution: Self-evolving memory for private-library code generation," arXiv:2604.24222, 2026. [Online]. Available: https://arxiv.org/abs/2604.24222 (accessed Oct. 17, 2026).
+
+[^4]: The Kubernetes Authors, "Kubernetes v1.37: Scale workloads to zero with HorizontalPodAutoscaler," Kubernetes Blog, Sep. 2, 2026. [Online]. Available: https://kubernetes.io/blog/2026/09/02/kubernetes-v1-37-hpa-scale-to-zero-beta/ (accessed Oct. 17, 2026).
+
+[^5]: KEDA Authors, "KEDA." [Online]. Available: https://keda.sh/ (accessed Oct. 17, 2026).
+
+[^6]: engawahq, "recommendations," source repository. [Online]. Available: https://github.com/engawahq/recommendations (accessed Oct. 17, 2026).
+
+[^7]: engawahq, "Genkan," source repository. [Online]. Available: https://github.com/engawahq/genkan (accessed Oct. 17, 2026).

@@ -1,0 +1,32 @@
+{
+  "zh": {
+    "aria": "Kubernetes 資源對應到平台概念：Namespace 對應專案，Deployment 或 StatefulSet 對應服務，PVC 對應磁碟，Service 或 HTTPRoute 對應網路存取。",
+    "resources": "叢集裡的 Kubernetes 資源",
+    "concepts": "你在平台上看到的概念",
+    "inference": "推斷",
+    "project": "專案",
+    "service": "服務",
+    "disk": "磁碟",
+    "network": "網路存取"
+  },
+  "en": {
+    "aria": "Kubernetes resources map to platform concepts: Namespace to project, Deployment or StatefulSet to service, PVC to disk, and Service or HTTPRoute to network access.",
+    "resources": "Kubernetes resources in your cluster",
+    "concepts": "Concepts you see in the platform",
+    "inference": "Infer",
+    "project": "Project",
+    "service": "Service",
+    "disk": "Disk",
+    "network": "Network access"
+  },
+  "zh-cn": {
+    "aria": "Kubernetes 资源对应到平台概念：Namespace 对应项目，Deployment 或 StatefulSet 对应服务，PVC 对应磁盘，Service 或 HTTPRoute 对应网络访问。",
+    "resources": "集群里的 Kubernetes 资源",
+    "concepts": "你在平台上看到的概念",
+    "inference": "推断",
+    "project": "项目",
+    "service": "服务",
+    "disk": "磁盘",
+    "network": "网络访问"
+  }
+}

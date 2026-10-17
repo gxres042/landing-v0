@@ -1,0 +1,57 @@
+---
+import ArrowRight from '@phosphor-icons/core/assets/regular/arrow-right.svg';
+import ArrowUpRight from '@phosphor-icons/core/assets/regular/arrow-up-right.svg';
+import ArrowLeft from '@phosphor-icons/core/assets/regular/arrow-left.svg';
+import ArrowDown from '@phosphor-icons/core/assets/regular/arrow-down.svg';
+import Play from '@phosphor-icons/core/assets/regular/play.svg';
+import Pause from '@phosphor-icons/core/assets/regular/pause.svg';
+import Replay from '@phosphor-icons/core/assets/regular/arrow-counter-clockwise.svg';
+import Chat from '@phosphor-icons/core/assets/regular/chat-circle.svg';
+import Folder from '@phosphor-icons/core/assets/regular/folder.svg';
+import ListChecks from '@phosphor-icons/core/assets/regular/list-checks.svg';
+import Cube from '@phosphor-icons/core/assets/regular/cube.svg';
+import CaretLeft from '@phosphor-icons/core/assets/regular/caret-left.svg';
+import CaretRight from '@phosphor-icons/core/assets/regular/caret-right.svg';
+import CaretUp from '@phosphor-icons/core/assets/regular/caret-up.svg';
+import CaretDown from '@phosphor-icons/core/assets/regular/caret-down.svg';
+import Prohibit from '@phosphor-icons/core/assets/regular/prohibit.svg';
+import HardDrives from '@phosphor-icons/core/assets/regular/hard-drives.svg';
+import Stack from '@phosphor-icons/core/assets/regular/stack.svg';
+import DotsThree from '@phosphor-icons/core/assets/regular/dots-three.svg';
+import Rss from '@phosphor-icons/core/assets/regular/rss.svg';
+import Globe from '@phosphor-icons/core/assets/regular/globe.svg';
+import Check from '@phosphor-icons/core/assets/regular/check.svg';
+
+const icons = {
+  'arrow-right': ArrowRight,
+  'arrow-up-right': ArrowUpRight,
+  'arrow-left': ArrowLeft,
+  'arrow-down': ArrowDown,
+  play: Play,
+  pause: Pause,
+  replay: Replay,
+  chat: Chat,
+  folder: Folder,
+  'list-checks': ListChecks,
+  cube: Cube,
+  'caret-left': CaretLeft,
+  'caret-right': CaretRight,
+  'caret-up': CaretUp,
+  'caret-down': CaretDown,
+  prohibit: Prohibit,
+  'hard-drives': HardDrives,
+  stack: Stack,
+  'dots-three': DotsThree,
+  rss: Rss,
+  globe: Globe,
+  check: Check,
+};
+
+interface Props {
+  name: keyof typeof icons;
+  class?: string;
+}
+const { name, class: className } = Astro.props;
+const Glyph = icons[name];
+---
+<Glyph width="16" height="16" class:list={['phosphor-icon', className]} aria-hidden="true" focusable="false" data-phosphor={name} />
