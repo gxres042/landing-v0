@@ -5,9 +5,72 @@ interface Props { lang?: 'zh' | 'en' | 'zh-cn' }
 const { lang = 'zh' } = Astro.props;
 const notice = copy[lang].preview;
 ---
-<aside aria-label={notice.label} class="border-b border-ink/15 bg-brand-soft text-ink" data-preview-notice>
-  <div class="wrap flex flex-wrap items-center gap-x-3 gap-y-2 py-3 text-sm leading-relaxed">
-    <span class="shrink-0 rounded-md border border-ink/20 px-2 py-0.5 font-mono text-xs font-semibold">{notice.label}</span>
-    <p class="min-w-0 flex-[1_1_24rem]">{notice.message}</p>
+<aside aria-label={notice.label} class="wrap preview-notice" data-preview-notice>
+  <div class="preview-notice-inner">
+    <span class="preview-badge">{notice.label}</span>
+    <p class="preview-message">{notice.message}</p>
   </div>
 </aside>
+
+<style>
+  .preview-notice {
+    margin-block: 8px;
+    border: 3px ridge #ffd700;
+    background: linear-gradient(100deg, #ff38c8, #ff6840, #fff200, #39ff63, #00e5ff, #7355ff, #ff38c8);
+    background-size: 300% 100%;
+    animation: preview-rainbow 6s linear infinite alternate;
+    box-shadow: inset 0 0 0 3px #ff1493, inset 0 0 18px #fff;
+  }
+
+  .preview-notice-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 14px;
+    padding: 8px 12px;
+  }
+
+  .preview-badge {
+    flex-shrink: 0;
+    padding: 2px 8px;
+    border: 3px outset #ffe66b;
+    background: linear-gradient(#fffbd0, #ffd700 48%, #ff8a00 52%, #fff500);
+    color: #b00000;
+    font: 900 14px/1.4 "DFKai-SB", "BiauKai", "KaiTi", serif;
+    letter-spacing: 0.15em;
+    text-shadow: 1px 1px #fff, 2px 2px #ffad00;
+    box-shadow: 4px 4px 0 #800080;
+    transform: rotate(-5deg);
+  }
+
+  .preview-badge::before,
+  .preview-badge::after {
+    content: "★";
+    color: #e00000;
+    margin-inline: 4px;
+  }
+
+  .preview-message {
+    flex: 1 1 24rem;
+    min-width: 0;
+    margin: 0;
+    color: #a00000;
+    font: 900 16px/1.6 "DFKai-SB", "BiauKai", "KaiTi", "Times New Roman", serif;
+    letter-spacing: 0.02em;
+    text-align: center;
+    text-shadow: -1px -1px #fff, 1px -1px #fff, -1px 1px #fff, 1px 1px #fff, 2px 2px #ffe600, 3px 3px #7b007b;
+  }
+
+  @keyframes preview-rainbow {
+    from { background-position: 0% 50%; }
+    to { background-position: 100% 50%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .preview-notice {
+      animation: none;
+      background-size: 100% 100%;
+    }
+  }
+</style>
